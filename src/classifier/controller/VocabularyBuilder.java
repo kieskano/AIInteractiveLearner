@@ -18,6 +18,7 @@ public class VocabularyBuilder {
     public static final String M_ELEMENT_TOTAL_NAME = "total";
 
     private HashMap<String, Word> words = new HashMap<>();
+    private HashMap<String, Integer> totalWordCounts = new HashMap<>();
     private String directory;
     private HashMap<String, ArrayList<String>> files = new HashMap<>();
     private HashMap<String, Double> numberOfFiles = new HashMap<>();
@@ -71,6 +72,11 @@ public class VocabularyBuilder {
                 for (String line : lines) {
                     String[] fileWords = line.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
                     for (String word : fileWords) {
+                        if (totalWordCounts.containsKey(word)) {
+                            totalWordCounts.replace(word, totalWordCounts.get(word) + 1);
+                        } else {
+                            totalWordCounts.put(word, 1);
+                        }
                         if (!pastWords.contains(word)) { //Checks for double words in the same file
                             pastWords.add(word);
                             //If the word does not exist
@@ -122,6 +128,20 @@ public class VocabularyBuilder {
         //System.out.println(words.get("people").toString());
     }
 
+    public void cleanVocabulary(int minFrequency, int maxFrequency) {
+        ArrayList<String> wordsToRemove = new ArrayList<>();
+        for (String word : words.keySet()) {
+            double frequency = totalWordCounts.get(word);
+            if (frequency < minFrequency || frequency > maxFrequency) {
+                wordsToRemove.add(word);
+            }
+        }
+
+        for (String word : wordsToRemove) {
+            words.remove(word);
+        }
+    }
+
     public List<Word> getWordList() {
         List<Word> result = new ArrayList<>();
 
@@ -134,8 +154,9 @@ public class VocabularyBuilder {
         return words;
     }
 
-//    public static void main(String[] args) {
-//        VocabularyBuilder vb = new VocabularyBuilder("blogs");
-//        vb.loadWords();
-//    }
+    public static void main(String[] args) {
+        VocabularyBuilder vb = new VocabularyBuilder("blogs");
+        vb.loadWords();
+        System.out.println(vb.getWordMap().get(""));
+    }
 }
