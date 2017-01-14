@@ -7,30 +7,28 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Created by Wijtse on 14-1-2017.
+ * Created by Wijtse on 14-1-2017
  */
 public class VocabularyBuilder {
 
     public static final String TRAIN_DIRECTORY_NAME = "train";
+    public static final String M_ELEMENT_TOTAL_NAME = "total";
 
     private HashMap<String, Word> words = new HashMap<>();
     private String directory;
     private HashMap<String, ArrayList<String>> files = new HashMap<>();
     private HashMap<String, Double> numberOfFiles = new HashMap<>();
     private ArrayList<String> classes = new ArrayList<>();
-
+    private double totalNrOfFiles = 0;
 
     public VocabularyBuilder(String derectory) {
         this.directory = derectory;
 
         //Determine classes
-        File folder = new File(derectory);
+        File folder = new File(derectory + File.separator + TRAIN_DIRECTORY_NAME);
         File[] classDirs = folder.listFiles();
         for (File file : classDirs) {
             if (file.isDirectory()) {
@@ -42,12 +40,13 @@ public class VocabularyBuilder {
 
         //Determine filenames
         for (String classDirectory : classes) {
-            File classDirFile = new File(derectory);
+            File classDirFile = new File(derectory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory);
             File[] trainFiles = classDirFile.listFiles();
             for (File file : trainFiles) {
                 if (file.isFile()) {
                     files.get(classDirectory).add(file.getName());
                     numberOfFiles.replace(classDirectory, numberOfFiles.get(classDirectory) + 1);
+                    totalNrOfFiles++;
                 }
             }
         }
@@ -63,39 +62,69 @@ public class VocabularyBuilder {
             for (String fileName : files.get(classDirectory)) {
                 List<String> lines = null;
                 try {
-                    lines = Files.readAllLines(Paths.get(directory + File.pathSeparator + File.pathSeparator + classDirectory + fileName), Charset.defaultCharset());
+                    lines = Files.readAllLines(Paths.get(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory + File.separator + fileName), Charset.defaultCharset());
                 } catch (IOException e) {
                     System.out.println("Could not read lines from file: " + fileName + " Because: " + e);
                     System.exit(1);
                 }
-
+                Set<String> pastWords = new HashSet<>();
                 for (String line : lines) {
                     String[] fileWords = line.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
                     for (String word : fileWords) {
-                        //If the word does not exist
-                        if (words.containsKey(word)) {
-                            Word newWord = new Word(word);
-                            Map<String, List<Double>> m = new HashMap<>();
-                            for (String className : classes) {
-                                List<Double> ints = new ArrayList<>();
-                                if (className.equals(classDirectory)) {
-                                    ints.add(1.0);
-                                } else {
+                        if (!pastWords.contains(word)) { //Checks for double words in the same file
+                            pastWords.add(word);
+                            //If the word does not exist
+                            if (!words.containsKey(word)) {
+                                Word newWord = new Word(word);
+                                Map<String, List<Double>> m = new HashMap<>();
+                                for (String className : classes) {
+                                    List<Double> ints = new ArrayList<>();
+                                    if (className.equals(classDirectory)) {
+                                        ints.add(1.0);
+                                    } else {
+                                        ints.add(0.0);
+                                    }
                                     ints.add(0.0);
+                                    ints.add(numberOfFiles.get(className));
+                                    m.put(className, ints);
                                 }
-                                ints.add(0.0);
-                                ints.add(numberOfFiles.get(className));
-                                m.put(className, ints);
+                                newWord.setM(m);
+                                List<String> keys = new ArrayList<>();
+                                keys.addAll(classes);
+                                newWord.setKeys(keys);
+                                words.put(word, newWord);
+                            } else { //If the word does exist
+                                Word wordObj = words.get(word);
+                                wordObj.getM().get(classDirectory).set(0, wordObj.getM().get(classDirectory).get(0) + 1);
                             }
-                            newWord.setM(m);
-                            newWord.setKeys(classes);
-                        } else { //If the word does exist
-                            Word wordObj = words.get(word);
-                            wordObj.getM().get(classDirectory).set(0, wordObj.getM().get(classDirectory).get(0) + 1);
                         }
                     }
                 }
             }
         }
+
+        for (Word word : words.values()) {
+            double totalIn = 0;
+            double totalNotIn = 0;
+            for (String className : classes) {
+                List<Double> mCol =  word.getM().get(className);
+                mCol.set(1, mCol.get(2) - mCol.get(0));
+                totalIn += mCol.get(0);
+                totalIn += mCol.get(1);
+            }
+            List<Double> lastCol = new ArrayList<>();
+            lastCol.add(totalIn);
+            lastCol.add(totalNotIn);
+            lastCol.add(totalNrOfFiles);
+            word.getM().put(M_ELEMENT_TOTAL_NAME, lastCol);
+            //word.getKeys().add(M_ELEMENT_TOTAL_NAME);
+        }
+        System.out.println(words.get("people").toString());
+    }
+
+    public static void main(String[] args) {
+        VocabularyBuilder vb = new VocabularyBuilder("blogs");
+        vb.loadWords();
+
     }
 }
