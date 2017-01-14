@@ -1,7 +1,16 @@
 package classifier.controller;
 
-/**
- * Created by han on 14-1-17.
- */
+import classifier.model.Word;
+
 public class FeatureSelect {
+
+    public static Word chisq(Word word) {
+        Word result = word;
+        int rows = 3;
+        int cols = result.getM().size();
+
+
+        return result;
+    }
+
 }
