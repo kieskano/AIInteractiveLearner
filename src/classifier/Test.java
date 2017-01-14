@@ -76,6 +76,8 @@ public class Test {
 
         VocabularyBuilder vocabularyBuilder = new VocabularyBuilder("blogs");
         vocabularyBuilder.loadWords();
+        vocabularyBuilder.cleanVocabulary(10, 3500);
+        System.out.println(vocabularyBuilder.getWordList().size());
         for (int i = 0; i < 10; i++) {
             System.out.println(vocabularyBuilder.getWordList().get(i));
         }
@@ -84,7 +86,7 @@ public class Test {
             word.setE(FeatureSelect.getE(word));
             word.setChisq(FeatureSelect.getChisq(word));
         }
-        System.out.println(FeatureSelect.getFeatures(vocabularyBuilder.getWordList(), 10));
+        System.out.println(FeatureSelect.getFeatures(vocabularyBuilder.getWordList(), 100));
 
     }
 }
