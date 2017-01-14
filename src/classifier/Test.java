@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.SynchronousQueue;
 
 public class Test {
 
@@ -35,7 +34,6 @@ public class Test {
         keys1.add("V");
         keys1.add("T");
         word1.setKeys(keys1);
-        System.out.println(word1);
 
         Word word2 = new Word("Woord nummero 2");
         List<Double> list21 = new ArrayList<>();
@@ -66,16 +64,13 @@ public class Test {
         keys2.add("N");
         keys2.add("T");
         word2.setKeys(keys2);
-        System.out.println(word2);
 
         word1.setE(FeatureSelect.getE(word1));
-        System.out.println(word1);
-
         word2.setE(FeatureSelect.getE(word2));
+        word1.setChisq(FeatureSelect.getChisq(word1));
+        word2.setChisq(FeatureSelect.getChisq(word2));
+
+        System.out.println(word1);
         System.out.println(word2);
-
-        System.out.println(FeatureSelect.getChisq(word1));
-        System.out.println(FeatureSelect.getChisq(word2));
-
     }
 }

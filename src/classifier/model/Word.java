@@ -134,6 +134,7 @@ public class Word {
                 result = result + "=> E: No list E.\n";
             }
         }
+        result = result + "=> Chi-squared: " + chisq + "\n";
         result = result + "----------------------END WORD------------------------";
         return result;
     }
