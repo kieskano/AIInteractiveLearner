@@ -140,6 +140,9 @@ public class VocabularyBuilder {
         for (String word : wordsToRemove) {
             words.remove(word);
         }
+
+        //Hardcoded blacklist
+        words.remove("");
     }
 
     public List<Word> getWordList() {
@@ -154,9 +157,17 @@ public class VocabularyBuilder {
         return words;
     }
 
+    public int getWordFrequency(String word) {
+        return totalWordCounts.get(word);
+    }
+
+    public int getNumberOfTrainingFiles() {
+        return (int) totalNrOfFiles;
+    }
+
     public static void main(String[] args) {
         VocabularyBuilder vb = new VocabularyBuilder("blogs");
         vb.loadWords();
-        System.out.println(vb.getWordMap().get(""));
+        System.out.println("The:" + vb.getWordFrequency(""));
     }
 }
