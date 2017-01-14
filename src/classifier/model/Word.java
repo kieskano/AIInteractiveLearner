@@ -62,7 +62,7 @@ public class Word {
 
     public String toString() {
         String result = "";
-        result = result + "----------------------BEGIN WORD----------------------";
+        result = result + "\n----------------------BEGIN WORD----------------------";
         result = result + "\n=> Word: " + word + "\n";
         if (keys.size() > 0) {
             if (M.size() > 0) {

@@ -5,10 +5,9 @@ import classifier.model.Word;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static java.lang.Integer.min;
 
 public class FeatureSelect {
 
@@ -59,15 +58,30 @@ public class FeatureSelect {
                 for (int i = 0; i < 2; i++) {
                     Mij = M.get(key).get(i);
                     Eij = E.get(key).get(i);
-                    chisq = Math.pow(Mij - Eij, 2) / Eij;
+                    if (Eij != 0) {
+                        chisq = Math.pow(Mij - Eij, 2) / Eij;
+                    } else {
+                        chisq = 0;
+                    }
                     result = result + chisq;
                 }
             }
         }
-
         round(result, 2);
         return result;
     }
+
+    public static List<Word> getFeatures(List<Word> in, int n) {
+        List<Word> result = in;
+        Collections.sort(result, new ChiSquaredComparator());
+        Collections.reverse(result);
+        result = result.subList(0, min(result.size() - 1, n));
+        return result;
+    }
+
+
+
+
 
     public static double round(double value, int places) {
         BigDecimal bd = new BigDecimal(value);

@@ -1,6 +1,7 @@
 package classifier;
 
 import classifier.controller.FeatureSelect;
+import classifier.controller.VocabularyBuilder;
 import classifier.model.Word;
 
 import java.util.ArrayList;
@@ -72,5 +73,18 @@ public class Test {
 
         System.out.println(word1);
         System.out.println(word2);
+
+        VocabularyBuilder vocabularyBuilder = new VocabularyBuilder("blogs");
+        vocabularyBuilder.loadWords();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(vocabularyBuilder.getWordList().get(i));
+        }
+
+        for (Word word : vocabularyBuilder.getWordList()) {
+            word.setE(FeatureSelect.getE(word));
+            word.setChisq(FeatureSelect.getChisq(word));
+        }
+        System.out.println(FeatureSelect.getFeatures(vocabularyBuilder.getWordList(), 10));
+
     }
 }
