@@ -66,3 +66,9 @@ fabric.properties
 # *.ipr
 
 # End of https://www.gitignore.io/api/intellij
+.idea/compiler.xml
+.idea/copyright/
+.idea/misc.xml
+.idea/modules.xml
+src/
+.idea/
