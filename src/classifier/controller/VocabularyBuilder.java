@@ -110,21 +110,32 @@ public class VocabularyBuilder {
                 List<Double> mCol =  word.getM().get(className);
                 mCol.set(1, mCol.get(2) - mCol.get(0));
                 totalIn += mCol.get(0);
-                totalIn += mCol.get(1);
+                totalNotIn += mCol.get(1);
             }
             List<Double> lastCol = new ArrayList<>();
             lastCol.add(totalIn);
             lastCol.add(totalNotIn);
             lastCol.add(totalNrOfFiles);
             word.getM().put(M_ELEMENT_TOTAL_NAME, lastCol);
-            //word.getKeys().add(M_ELEMENT_TOTAL_NAME);
+            word.getKeys().add(M_ELEMENT_TOTAL_NAME);
         }
-        System.out.println(words.get("people").toString());
+        //System.out.println(words.get("people").toString());
     }
 
-    public static void main(String[] args) {
-        VocabularyBuilder vb = new VocabularyBuilder("blogs");
-        vb.loadWords();
+    public List<Word> getWordList() {
+        List<Word> result = new ArrayList<>();
 
+        result.addAll(words.values());
+
+        return result;
     }
+
+    public Map<String, Word> getWordMap() {
+        return words;
+    }
+
+//    public static void main(String[] args) {
+//        VocabularyBuilder vb = new VocabularyBuilder("blogs");
+//        vb.loadWords();
+//    }
 }
