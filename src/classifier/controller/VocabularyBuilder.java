@@ -122,6 +122,20 @@ public class VocabularyBuilder {
         //System.out.println(words.get("people").toString());
     }
 
+    public void cleanVocabulary(int minFrequency, int maxFrequency) {
+        ArrayList<String> wordsToRemove = new ArrayList<>();
+        for (String word : words.keySet()) {
+            double frequency = words.get(word).getM().get(M_ELEMENT_TOTAL_NAME).get(0);
+            if (frequency < minFrequency || frequency > maxFrequency) {
+                wordsToRemove.add(word);
+            }
+        }
+
+        for (String word : wordsToRemove) {
+            words.remove(word);
+        }
+    }
+
     public List<Word> getWordList() {
         List<Word> result = new ArrayList<>();
 
@@ -134,8 +148,9 @@ public class VocabularyBuilder {
         return words;
     }
 
-//    public static void main(String[] args) {
-//        VocabularyBuilder vb = new VocabularyBuilder("blogs");
-//        vb.loadWords();
-//    }
+    public static void main(String[] args) {
+        VocabularyBuilder vb = new VocabularyBuilder("blogs");
+        vb.loadWords();
+        System.out.println(vb.getWordList().size());
+    }
 }
