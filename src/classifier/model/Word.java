@@ -15,6 +15,7 @@ public class Word {
     private Map<String, List<Double>> E = new HashMap<>();
     private double chisq = 0;
     private List<String> keys = new ArrayList<>();
+    private int occurences = 0;
 
     public Word(String word) {
         this.word = word;
@@ -58,6 +59,14 @@ public class Word {
 
     public void setKeys(List<String> keys) {
         this.keys = keys;
+    }
+
+    public int getOccurences() {
+        return occurences;
+    }
+
+    public void setOccurences(int occurences) {
+        this.occurences = occurences;
     }
 
     public String toString() {

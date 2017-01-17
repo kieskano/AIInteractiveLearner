@@ -124,6 +124,7 @@ public class VocabularyBuilder {
             lastCol.add(totalNrOfFiles);
             word.getM().put(M_ELEMENT_TOTAL_NAME, lastCol);
             word.getKeys().add(M_ELEMENT_TOTAL_NAME);
+            word.setOccurences(totalWordCounts.get(word.getWord()));
         }
         //System.out.println(words.get("people").toString());
     }
@@ -157,17 +158,27 @@ public class VocabularyBuilder {
         return words;
     }
 
-    public int getWordFrequency(String word) {
-        return totalWordCounts.get(word);
-    }
-
     public int getNumberOfTrainingFiles() {
         return (int) totalNrOfFiles;
+    }
+
+    public int getTotalNumberOfUniqueWords() {
+        return words.size();
+    }
+
+    public int getTotalNumberOfWords() {
+        int result = 0;
+
+        for (Word word : words.values()) {
+            result += word.getOccurences();
+        }
+
+        return result;
     }
 
     public static void main(String[] args) {
         VocabularyBuilder vb = new VocabularyBuilder("blogs");
         vb.loadWords();
-        System.out.println("The:" + vb.getWordFrequency(""));
+        System.out.println(vb.getWordMap().get("hello").toString());
     }
 }
