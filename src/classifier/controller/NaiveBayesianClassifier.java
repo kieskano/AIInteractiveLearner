@@ -39,4 +39,20 @@ public class NaiveBayesianClassifier {
 
 
     }
+
+    public static Trainer getTrainer() {
+        return trainer;
+    }
+
+    public static void setTrainer(Trainer trainer) {
+        NaiveBayesianClassifier.trainer = trainer;
+    }
+
+    public static Classifier getClassifier() {
+        return classifier;
+    }
+
+    public static void setClassifier(Classifier classifier) {
+        NaiveBayesianClassifier.classifier = classifier;
+    }
 }

@@ -16,7 +16,7 @@ public class Trainer {
         cleanVocab = new HashMap<>();
         features = new HashMap<>();
 
-        VocabularyBuilder vocabularyBuilder = new VocabularyBuilder(directory)
+        VocabularyBuilder vocabularyBuilder = new VocabularyBuilder(directory);
 
         //Fill vocab lists
         vocabularyBuilder.loadWords();
