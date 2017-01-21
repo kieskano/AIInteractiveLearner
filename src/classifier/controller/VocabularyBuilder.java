@@ -21,14 +21,13 @@ public class VocabularyBuilder {
     private Map<String, Integer> totalWordCounts = new HashMap<>();
     private Map<String, Map<String, Integer>> totalWordCountsPerClass = new HashMap<>();
 
-
     private String directory;
     private Map<String, ArrayList<String>> files = new HashMap<>();
     private Map<String, Double> numberOfFiles = new HashMap<>();
     private List<String> classes = new ArrayList<>();
     private double totalNrOfFiles = 0;
 
-    public VocabularyBuilder(String derectory) {
+    public VocabularyBuilder(String derectory, boolean reset) {
         this.directory = derectory;
 
         //Determine classes
@@ -36,10 +35,14 @@ public class VocabularyBuilder {
         File[] classDirs = folder.listFiles();
         for (File file : classDirs) {
             if (file.isDirectory()) {
-                files.put(file.getName(), new ArrayList<>());
-                numberOfFiles.put(file.getName(), 0.0);
-                classes.add(file.getName());
-                totalWordCountsPerClass.put(file.getName(), new HashMap<>());
+                if (reset && file.getName().contains("classified")) {
+                    file.delete();
+                } else {
+                    files.put(file.getName(), new ArrayList<>());
+                    numberOfFiles.put(file.getName(), 0.0);
+                    classes.add(file.getName());
+                    totalWordCountsPerClass.put(file.getName(), new HashMap<>());
+                }
             }
         }
 
@@ -172,24 +175,8 @@ public class VocabularyBuilder {
         return result;
     }
 
-    public Map<String, Word> getWordMap() {
-        return words;
-    }
-
-    public int getNumberOfTrainingFiles() {
-        return (int) totalNrOfFiles;
-    }
-
-    public int getTotalNumberOfUniqueWords() {
-        return words.size();
-    }
-
-    public int getTotalNumberOfWords() {
-        int result = 0;
-
-        //TODO do dis
-
-        return result;
+    public List<String> getClasses() {
+        return classes;
     }
 
     public static void main(String[] args) {
