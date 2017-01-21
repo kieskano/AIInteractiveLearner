@@ -1,6 +1,7 @@
 package classifier.controller;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ public class Updater {
     private List<String> classes;
 
     public Updater() {
+        classes = new ArrayList<>();
         directory = NaiveBayesianClassifier.getDirectory();
         //Determine classes
         File folder = new File(directory + File.separator + VocabularyBuilder.TRAIN_DIRECTORY_NAME);
