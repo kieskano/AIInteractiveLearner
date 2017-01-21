@@ -4,15 +4,14 @@ import classifier.model.Word;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
-/**
- * Created by han on 21-1-17.
- */
+
 public class NaiveBayesianClassifier {
 
     private static Trainer trainer;
     private static Classifier classifier;
-    //private static Updater updater;
+    private static Updater updater;
 
 
 
@@ -35,7 +34,15 @@ public class NaiveBayesianClassifier {
 
         trainer = new Trainer();
         classifier = new Classifier();
-        //updater = new Updater();
+        updater = new Updater();
+
+        trainer.train();
+
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            System.out.println(input + " to thee as well, melord.");
+        }
 
 
     }
@@ -54,5 +61,53 @@ public class NaiveBayesianClassifier {
 
     public static void setClassifier(Classifier classifier) {
         NaiveBayesianClassifier.classifier = classifier;
+    }
+
+    public static Updater getUpdater() {
+        return updater;
+    }
+
+    public static void setUpdater(Updater updater) {
+        NaiveBayesianClassifier.updater = updater;
+    }
+
+    public static String getDirectory() {
+        return directory;
+    }
+
+    public static void setDirectory(String directory) {
+        NaiveBayesianClassifier.directory = directory;
+    }
+
+    public static int getAmountOfFeatures() {
+        return amountOfFeatures;
+    }
+
+    public static void setAmountOfFeatures(int amountOfFeatures) {
+        NaiveBayesianClassifier.amountOfFeatures = amountOfFeatures;
+    }
+
+    public static int getSmoothingConstant() {
+        return smoothingConstant;
+    }
+
+    public static void setSmoothingConstant(int smoothingConstant) {
+        NaiveBayesianClassifier.smoothingConstant = smoothingConstant;
+    }
+
+    public static int getMinFreq() {
+        return minFreq;
+    }
+
+    public static void setMinFreq(int minFreq) {
+        NaiveBayesianClassifier.minFreq = minFreq;
+    }
+
+    public static int getMaxFreq() {
+        return maxFreq;
+    }
+
+    public static void setMaxFreq(int maxFreq) {
+        NaiveBayesianClassifier.maxFreq = maxFreq;
     }
 }
