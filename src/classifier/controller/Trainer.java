@@ -38,8 +38,8 @@ public class Trainer {
         }
 
         for(Word word : vocabularyBuilder.getWordList()) {
-            FeatureSelect.getE(word);
-            FeatureSelect.getChisq(word);
+            word.setE(FeatureSelect.getE(word));
+            word.setChisq(FeatureSelect.getChisq(word));
         }
         List<Word> featureList = new ArrayList<>();
         for (String c : vocabularyBuilder.getClasses()) {

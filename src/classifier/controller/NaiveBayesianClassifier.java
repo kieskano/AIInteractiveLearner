@@ -13,8 +13,6 @@ public class NaiveBayesianClassifier {
     private static Classifier classifier;
     private static Updater updater;
 
-
-
     private static String directory;
     private static int amountOfFeatures;
     private static int smoothingConstant;
@@ -34,7 +32,7 @@ public class NaiveBayesianClassifier {
 
         trainer = new Trainer();
         classifier = new Classifier();
-        updater = new Updater();
+        //updater = new Updater("blogs");
 
         trainer.train();
 
