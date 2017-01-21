@@ -95,6 +95,16 @@ public class FeatureSelect {
         return result;
     }
 
+    public static List<Word> getFeaturesNaive(List<Word> in, int n) {
+        List<Word> result = in;
+        Collections.sort(result, new ChiSquaredComparator());
+        Collections.reverse(result);
+        if (result.size() > 0) {
+            result = result.subList(0, min(result.size() - 1, n));
+        }
+        return result;
+    }
+
     public static double round(double value, int places) {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);

@@ -87,6 +87,7 @@ public class Test {
             word.setChisq(FeatureSelect.getChisq(word));
         }
         System.out.println(FeatureSelect.getFeatures(vocabularyBuilder.getWordList(), 10, "F"));
+        System.out.println(FeatureSelect.getFeaturesNaive(vocabularyBuilder.getWordList(), 10));
 
         System.out.println(word1.getKeys());
 
