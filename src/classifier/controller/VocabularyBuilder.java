@@ -27,7 +27,7 @@ public class VocabularyBuilder {
     private List<String> classes = new ArrayList<>();
     private double totalNrOfFiles = 0;
 
-    public VocabularyBuilder(String derectory, boolean reset) {
+    public VocabularyBuilder(String derectory) {
         this.directory = derectory;
 
         //Determine classes
@@ -35,14 +35,10 @@ public class VocabularyBuilder {
         File[] classDirs = folder.listFiles();
         for (File file : classDirs) {
             if (file.isDirectory()) {
-                if (reset && file.getName().contains("classified")) {
-                    file.delete();
-                } else {
-                    files.put(file.getName(), new ArrayList<>());
-                    numberOfFiles.put(file.getName(), 0.0);
-                    classes.add(file.getName());
-                    totalWordCountsPerClass.put(file.getName(), new HashMap<>());
-                }
+                files.put(file.getName(), new ArrayList<>());
+                numberOfFiles.put(file.getName(), 0.0);
+                classes.add(file.getName());
+                totalWordCountsPerClass.put(file.getName(), new HashMap<>());
             }
         }
 
