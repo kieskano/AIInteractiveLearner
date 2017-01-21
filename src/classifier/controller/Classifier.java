@@ -11,20 +11,6 @@ import java.util.List;
  */
 public class Classifier {
 
-    private HashMap<String, Word> features;
 
-    public Classifier(List<Word> vocabulary) {
-        this.features = new HashMap<>();
-        for (Word word : vocabulary) {
-            this.features.put(word.getWord(), word);
-        }
-    }
-
-    public String classify(Document document) {
-        String result = "";
-
-
-        return result;
-    }
 
 }
