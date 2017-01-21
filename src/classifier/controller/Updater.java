@@ -1,20 +1,18 @@
 package classifier.controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.*;
 import java.util.List;
 
 /**
- * Created by Wijtse on 21-1-2017.
+ * Created by Wijtse on 21-1-2017
  */
 public class Updater {
 
     private String directory;
     private List<String> classes;
 
-    public Updater(String directory) {
+    public Updater() {
+        directory = NaiveBayesianClassifier.getDirectory();
         //Determine classes
         File folder = new File(directory + File.separator + VocabularyBuilder.TRAIN_DIRECTORY_NAME);
         File[] classDirs = folder.listFiles();
@@ -39,6 +37,27 @@ public class Updater {
 
     public void copyToTrainingSet(File file, String className) {
         File destFile = new File(directory + File.separator + VocabularyBuilder.TRAIN_DIRECTORY_NAME + File.separator + className + File.separator + "classified" + file.getName());
+        try {
+            copyFile(file, destFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void copyFile(File src, File dest) throws  IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(src);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
     }
 }
