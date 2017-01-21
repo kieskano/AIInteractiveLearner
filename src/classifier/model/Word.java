@@ -2,7 +2,6 @@ package classifier.model;
 
 import classifier.controller.FeatureSelect;
 
-import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,7 @@ public class Word {
     private Map<String, List<Double>> E = new HashMap<>();
     private double chisq = 0;
     private List<String> keys = new ArrayList<>();
-    private int occurences = 0;
+    private Map<String, Integer> occurrencesPerClass = new HashMap<>();
 
     public Word(String word) {
         this.word = word;
@@ -61,12 +60,12 @@ public class Word {
         this.keys = keys;
     }
 
-    public int getOccurences() {
-        return occurences;
+    public Map<String, Integer> getOccurrencesPerClass() {
+        return occurrencesPerClass;
     }
 
-    public void setOccurences(int occurences) {
-        this.occurences = occurences;
+    public void setOccurrencesPerClass(Map<String, Integer> occurrencesPerClass) {
+        this.occurrencesPerClass = occurrencesPerClass;
     }
 
     public String toString() {

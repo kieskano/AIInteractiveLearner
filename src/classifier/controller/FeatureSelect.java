@@ -95,10 +95,6 @@ public class FeatureSelect {
         return result;
     }
 
-
-
-
-
     public static double round(double value, int places) {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);

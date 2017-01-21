@@ -17,12 +17,15 @@ public class VocabularyBuilder {
     public static final String TRAIN_DIRECTORY_NAME = "train";
     public static final String M_ELEMENT_TOTAL_NAME = "total";
 
-    private HashMap<String, Word> words = new HashMap<>();
-    private HashMap<String, Integer> totalWordCounts = new HashMap<>();
+    private Map<String, Word> words = new HashMap<>();
+    private Map<String, Integer> totalWordCounts = new HashMap<>();
+    private Map<String, Map<String, Integer>> totalWordCountsPerClass = new HashMap<>();
+
+
     private String directory;
-    private HashMap<String, ArrayList<String>> files = new HashMap<>();
-    private HashMap<String, Double> numberOfFiles = new HashMap<>();
-    private ArrayList<String> classes = new ArrayList<>();
+    private Map<String, ArrayList<String>> files = new HashMap<>();
+    private Map<String, Double> numberOfFiles = new HashMap<>();
+    private List<String> classes = new ArrayList<>();
     private double totalNrOfFiles = 0;
 
     public VocabularyBuilder(String derectory) {
@@ -36,6 +39,7 @@ public class VocabularyBuilder {
                 files.put(file.getName(), new ArrayList<>());
                 numberOfFiles.put(file.getName(), 0.0);
                 classes.add(file.getName());
+                totalWordCountsPerClass.put(file.getName(), new HashMap<>());
             }
         }
 
@@ -74,8 +78,10 @@ public class VocabularyBuilder {
                     for (String word : fileWords) {
                         if (totalWordCounts.containsKey(word)) {
                             totalWordCounts.replace(word, totalWordCounts.get(word) + 1);
+                            totalWordCountsPerClass.get(classDirectory).replace(word, totalWordCountsPerClass.get(classDirectory).get(word) + 1);
                         } else {
                             totalWordCounts.put(word, 1);
+                            totalWordCountsPerClass.get(classDirectory).put(word, 1);
                         }
                         if (!pastWords.contains(word)) { //Checks for double words in the same file
                             pastWords.add(word);
@@ -124,7 +130,15 @@ public class VocabularyBuilder {
             lastCol.add(totalNrOfFiles);
             word.getM().put(M_ELEMENT_TOTAL_NAME, lastCol);
             word.getKeys().add(M_ELEMENT_TOTAL_NAME);
-            word.setOccurences(totalWordCounts.get(word.getWord()));
+
+            Map<String, Integer> occurencesPerClass = new HashMap<>();
+            for (String className : classes) {
+                occurencesPerClass.put(className, 0);
+                if (totalWordCountsPerClass.get(className).get(word.getWord()) != null) {
+                    occurencesPerClass.replace(className, totalWordCountsPerClass.get(className).get(word.getWord()));
+                }
+            }
+            word.setOccurrencesPerClass(occurencesPerClass);
         }
         //System.out.println(words.get("people").toString());
     }
@@ -169,16 +183,15 @@ public class VocabularyBuilder {
     public int getTotalNumberOfWords() {
         int result = 0;
 
-        for (Word word : words.values()) {
-            result += word.getOccurences();
-        }
+        //TODO do dis
 
         return result;
     }
 
     public static void main(String[] args) {
-        VocabularyBuilder vb = new VocabularyBuilder("blogs");
-        vb.loadWords();
-        System.out.println(vb.getWordMap().get("hello").toString());
+//        VocabularyBuilder vb = new VocabularyBuilder("blogs");
+//        vb.loadWords();
+//        System.out.println(vb.getWordMap().get("hello").toString());
+
     }
 }
