@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class NaiveBayesianClassifier {
 
-    private static VocabularyBuilder vocabularyBuilder;
+    private static Trainer trainer;
     private static Classifier classifier;
     //private static Updater updater;
 
@@ -33,7 +33,7 @@ public class NaiveBayesianClassifier {
         //Initialization
         //TODO: Reset training data
 
-        vocabularyBuilder = new VocabularyBuilder(directory);
+        trainer = new Trainer();
         classifier = new Classifier();
         //updater = new Updater();
 
