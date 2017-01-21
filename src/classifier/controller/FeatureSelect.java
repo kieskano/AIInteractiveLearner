@@ -71,11 +71,27 @@ public class FeatureSelect {
         return result;
     }
 
-    public static List<Word> getFeatures(List<Word> in, int n) {
-        List<Word> result = in;
+    public static List<Word> getFeatures(List<Word> in, int n, String c) {
+        List<Word> result = new ArrayList<>();
+        for (int i = 0; i < in.size(); i++) {
+            String maxC = "";
+            double prevCVal = 0;
+            for (int j = 0; j < in.get(i).getKeys().size() - 1; j++) {
+                double curCVal = in.get(i).getM().get(in.get(i).getKeys().get(j)).get(0);
+                if (curCVal > prevCVal) {
+                    prevCVal = curCVal;
+                    maxC = in.get(i).getKeys().get(j);
+                }
+            }
+            if (maxC.equals(c)) {
+                result.add(in.get(i));
+            }
+        }
         Collections.sort(result, new ChiSquaredComparator());
         Collections.reverse(result);
-        result = result.subList(0, min(result.size() - 1, n));
+        if (result.size() > 0) {
+            result = result.subList(0, min(result.size() - 1, n));
+        }
         return result;
     }
 

@@ -71,22 +71,24 @@ public class Test {
         word1.setChisq(FeatureSelect.getChisq(word1));
         word2.setChisq(FeatureSelect.getChisq(word2));
 
-        System.out.println(word1);
-        System.out.println(word2);
+        //System.out.println(word1);
+        //System.out.println(word2);
 
         VocabularyBuilder vocabularyBuilder = new VocabularyBuilder("blogs");
         vocabularyBuilder.loadWords();
         vocabularyBuilder.cleanVocabulary(10, 3500);
         System.out.println(vocabularyBuilder.getWordList().size());
-        for (int i = 0; i < 10; i++) {
-            System.out.println(vocabularyBuilder.getWordList().get(i));
-        }
+        //for (int i = 0; i < 10; i++) {
+        //    System.out.println(vocabularyBuilder.getWordList().get(i));
+        //}
 
         for (Word word : vocabularyBuilder.getWordList()) {
             word.setE(FeatureSelect.getE(word));
             word.setChisq(FeatureSelect.getChisq(word));
         }
-        System.out.println(FeatureSelect.getFeatures(vocabularyBuilder.getWordList(), 100));
+        System.out.println(FeatureSelect.getFeatures(vocabularyBuilder.getWordList(), 10, "F"));
+
+        System.out.println(word1.getKeys());
 
     }
 }
