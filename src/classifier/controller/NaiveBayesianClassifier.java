@@ -14,9 +14,7 @@ public class NaiveBayesianClassifier {
     private static Classifier classifier;
     //private static Updater updater;
 
-    private static Map<String, Word> vocab;
-    private static Map<String, Word> cleanVocab;
-    private static Map<String, Word> features;
+
 
     private static String directory;
     private static int amountOfFeatures;
@@ -39,18 +37,6 @@ public class NaiveBayesianClassifier {
         classifier = new Classifier();
         //updater = new Updater();
 
-        vocab = new HashMap<>();
-        cleanVocab = new HashMap<>();
-        features = new HashMap<>();
 
-        //Fill vocab lists
-        vocabularyBuilder.loadWords();
-        for (Word word : vocabularyBuilder.getWordList()) {
-            vocab.put(word.getWord(), word);
-        }
-        vocabularyBuilder.cleanVocabulary(minFreq, maxFreq);
-        for (Word word : vocabularyBuilder.getWordList()) {
-            cleanVocab.put(word.getWord(), word);
-        }
     }
 }

@@ -1,17 +1,31 @@
 package classifier.controller;
 
+import classifier.model.Word;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Trainer {
 
-    /*
-    1. extract all words from the training set documents
-        variables: path
-    2. determine the best features for all classes
-        variables: amount of features per class
-    3.
-     */
+    private Map<String, Word> vocab;
+    private Map<String, Word> cleanVocab;
+    private Map<String, Word> features;
 
+    public void Train() {
+        vocab = new HashMap<>();
+        cleanVocab = new HashMap<>();
+        features = new HashMap<>();
 
-
+        //Fill vocab lists
+        vocabularyBuilder.loadWords();
+        for (Word word : vocabularyBuilder.getWordList()) {
+            vocab.put(word.getWord(), word);
+        }
+        vocabularyBuilder.cleanVocabulary(minFreq, maxFreq);
+        for (Word word : vocabularyBuilder.getWordList()) {
+            cleanVocab.put(word.getWord(), word);
+        }
+    }
 
 
 
