@@ -78,7 +78,11 @@ public class VocabularyBuilder {
                     for (String word : fileWords) {
                         if (totalWordCounts.containsKey(word)) {
                             totalWordCounts.replace(word, totalWordCounts.get(word) + 1);
-                            totalWordCountsPerClass.get(classDirectory).replace(word, totalWordCountsPerClass.get(classDirectory).get(word) + 1);
+                            if (totalWordCountsPerClass.get(classDirectory).containsKey(word)) {
+                                totalWordCountsPerClass.get(classDirectory).replace(word, totalWordCountsPerClass.get(classDirectory).get(word) + 1);
+                            } else {
+                                totalWordCountsPerClass.get(classDirectory).put(word, 1);
+                            }
                         } else {
                             totalWordCounts.put(word, 1);
                             totalWordCountsPerClass.get(classDirectory).put(word, 1);
