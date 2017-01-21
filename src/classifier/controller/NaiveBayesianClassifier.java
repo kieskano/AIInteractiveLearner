@@ -27,12 +27,11 @@ public class NaiveBayesianClassifier {
         minFreq = Integer.parseInt(args[3]);
         maxFreq = Integer.parseInt(args[4]);
 
-        //Initialization
-        //TODO: Reset training data
-
         trainer = new Trainer();
         classifier = new Classifier();
-        //updater = new Updater("blogs");
+        updater = new Updater();
+
+        updater.resetTrainingData();
 
         trainer.train();
 
