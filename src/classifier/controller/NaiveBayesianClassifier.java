@@ -15,7 +15,7 @@ public class NaiveBayesianClassifier {
 
     private static String directory;
     private static int amountOfFeatures;
-    private static int smoothingConstant;
+    private static double smoothingConstant;
     private static int minFreq;
     private static int maxFreq;
 
@@ -23,7 +23,7 @@ public class NaiveBayesianClassifier {
         //Parse args
         directory = args[0];
         amountOfFeatures = Integer.parseInt(args[1]);
-        smoothingConstant = Integer.parseInt(args[2]);
+        smoothingConstant = Double.parseDouble(args[2]);
         minFreq = Integer.parseInt(args[3]);
         maxFreq = Integer.parseInt(args[4]);
 
@@ -38,7 +38,8 @@ public class NaiveBayesianClassifier {
         Scanner sc = new Scanner(System.in);
         while (sc.hasNextLine()) {
             String input = sc.nextLine();
-            System.out.println(input + " to thee as well, melord.");
+            classifier.classify(input);
+
         }
 
 
@@ -84,11 +85,11 @@ public class NaiveBayesianClassifier {
         NaiveBayesianClassifier.amountOfFeatures = amountOfFeatures;
     }
 
-    public static int getSmoothingConstant() {
+    public static double getSmoothingConstant() {
         return smoothingConstant;
     }
 
-    public static void setSmoothingConstant(int smoothingConstant) {
+    public static void setSmoothingConstant(double smoothingConstant) {
         NaiveBayesianClassifier.smoothingConstant = smoothingConstant;
     }
 

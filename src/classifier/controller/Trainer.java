@@ -12,6 +12,7 @@ public class Trainer {
     private Map<String, Word> vocab;
     private Map<String, Word> cleanVocab;
     private Map<String, Word> features;
+    private VocabularyBuilder vocabularyBuilder;
 
     public void train() {
         System.out.println("|-- Starting training");
@@ -20,7 +21,7 @@ public class Trainer {
         cleanVocab = new HashMap<>();
         features = new HashMap<>();
 
-        VocabularyBuilder vocabularyBuilder = new VocabularyBuilder(NaiveBayesianClassifier.getDirectory());
+        vocabularyBuilder = new VocabularyBuilder(NaiveBayesianClassifier.getDirectory());
 
         //Fill vocab lists
         System.out.println("|-- Filling vocabulary lists...");
@@ -51,7 +52,16 @@ public class Trainer {
             features.put(word.getWord(), word);
         }
 
-        System.out.println("|-- Vocabulary lists filled.");
+        System.out.println("|-- Vocabulary lists filled");
+        System.out.println("|-- Training complete");
+    }
+
+    public Map<String, Word> getFeatures() {
+        return features;
+    }
+
+    public VocabularyBuilder getVocabularyBuilder() {
+        return vocabularyBuilder;
     }
 
 

@@ -91,5 +91,7 @@ public class Test {
 
         System.out.println(word1.getKeys());
 
+        System.out.println(Math.log(8)/Math.log(2));
+
     }
 }

@@ -181,4 +181,12 @@ public class VocabularyBuilder {
 //        System.out.println(vb.getWordMap().get("hello").toString());
 
     }
+
+    public Map<String,Double> getNumberOfFiles() {
+        return numberOfFiles;
+    }
+
+    public double getTotalNrOfFiles() {
+        return totalNrOfFiles;
+    }
 }
