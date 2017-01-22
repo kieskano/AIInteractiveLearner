@@ -2,9 +2,12 @@ package classifier.controller;
 
 import classifier.model.Word;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import static classifier.controller.Classifier.TEST_DIRECTORY_NAME;
 
 
 public class NaiveBayesianClassifier {
@@ -37,9 +40,42 @@ public class NaiveBayesianClassifier {
 
         Scanner sc = new Scanner(System.in);
         while (sc.hasNextLine()) {
-            String input = sc.nextLine();
-            classifier.classify(input);
-
+            String filename = sc.nextLine();
+            String result = classifier.classify(filename);
+            System.out.println("--| Started updating");
+            System.out.println("--| The file is classified as: " + result);
+            boolean inputValid = false;
+            String correct = "";
+            String actualClass = "";
+            while (!inputValid) {
+                System.out.println("--| Is this correct? (y/n)");
+                correct = sc.nextLine();
+                if (correct.equals("y")) {
+                    inputValid = true;
+                    actualClass = result;
+                } else if (correct.equals("n")) {
+                    inputValid = true;
+                    boolean isActualClass = false;
+                    while (!isActualClass) {
+                        System.out.println("--| Could you please tell me what the right class would have been?");
+                        actualClass = sc.nextLine();
+                        if (trainer.getVocabularyBuilder().getClasses().contains(actualClass)) {
+                            isActualClass = true;
+                        } else {
+                            System.out.println("--| Unfortunately, that class is not known. Please try again");
+                        }
+                    }
+                } else {
+                    System.out.println("--| Please answer with \"y\" or \"n\"");
+                }
+            }
+            String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
+                    + File.separator + filename;
+            File classifiedFile = new File(fileLocation);
+            updater.copyToTrainingSet(classifiedFile, actualClass);
+            System.out.println("--| Retraining...");
+            trainer.train();
+            System.out.println("--| Updating complete");
         }
 
 

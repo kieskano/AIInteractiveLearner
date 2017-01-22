@@ -87,15 +87,14 @@ public class Classifier {
                     currentChance += log2(chances.get(word).get(c));
                 }
             }
-            System.out.println(c + " " + currentChance);
+            System.out.println("-|- " + c + " " + currentChance);
             //log2(0.001) = -9 log2(0.0001) = -13 so the higher chance is better
             if (currentChance > currentBestChance || currentBestChance == 0) {
                 currentBestChance = currentChance;
                 result = c;
             }
         }
-        System.out.println("RESULT CLASSIFIER = " + result);
-
+        System.out.println("-|- Classification complete");
         return result;
     }
 
