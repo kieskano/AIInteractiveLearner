@@ -12,7 +12,7 @@ public class TestVocaBuild {
         VocabularyBuilder vb = new VocabularyBuilder("testfiles");
         vb.loadWords();
         System.out.println("Loaded " + vb.getWordList().size() + " distinct words");
-        vb.cleanVocabulary(1,4);
+        System.out.println(vb.getWordList());
         System.out.println("Word list contains " + vb.getWordList().size() + " distinct words after cleaning");
 
     }
