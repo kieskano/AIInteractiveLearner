@@ -42,7 +42,7 @@ public class Classifier {
         System.out.println("-|- Normalizing words...");
         for (String line : lines) {
             String[] wordArray = line.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
-            words = Arrays.asList(wordArray);
+            words.addAll(Arrays.asList(wordArray));
         }
         System.out.println("-|- Words normalized");
 
