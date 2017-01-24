@@ -55,9 +55,9 @@ public class VocabularyBuilder {
             }
         }
 
-        System.out.println("Located classes:");
+        System.out.println("|-- Located classes:");
         for (String className : classes) {
-            System.out.println("'" + className + "' with " + numberOfFiles.get(className) +  " training files");
+            System.out.println("|-- '" + className + "' with " + numberOfFiles.get(className) +  " training files");
         }
     }
 
