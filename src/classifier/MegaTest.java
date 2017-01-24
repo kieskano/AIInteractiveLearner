@@ -44,9 +44,9 @@ public class MegaTest {
         File[] testFiles = folder.listFiles();
         int correctlyClassified = 0;
         for (File file : testFiles) {
-            String fileTrueClass = file.getName().substring(0,1);
+            String fileTrueClass = file.getName().substring(0,1); // String fileTrueClass = file.getName().substring(0,1).equals("s") ? "spam" : "ham";
             String result = NaiveBayesianClassifier.getClassifier().classify(file.getName());
-            if ((result.equals("spam") && fileTrueClass.equals("")) || (!result.equals("spam") && !fileTrueClass.equals(""))) {
+            if (result.equals(fileTrueClass)) {//(result.equals("spam") && fileTrueClass.equals("")) || (!result.equals("spam") && !fileTrueClass.equals(""))) {
                 correctlyClassified++;
                 correctlyClassifiedFilesPerClass.replace(fileTrueClass, correctlyClassifiedFilesPerClass.get(fileTrueClass) + 1);
             }
