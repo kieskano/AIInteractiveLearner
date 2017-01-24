@@ -6,7 +6,9 @@ import classifier.controller.Trainer;
 import classifier.controller.Updater;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static classifier.controller.Classifier.TEST_DIRECTORY_NAME;
@@ -16,9 +18,13 @@ public class SuperMegaTest {
     public enum Corpus{MAIL, BLOGS};
 
     public static final Corpus CORPUS = Corpus.BLOGS;
+    public static final int MAX_FEATURES = 100;
+    public static final int MAX_MIN_FREQ = 49;
+    public static final int MAX_MAX_FREQ = 100;
 
     public static void main(String[] args) {
         double currentBestResult = 0;
+        List<Integer> bestVariables = new ArrayList<>();
         String directory = "";
 
         if (CORPUS.equals(Corpus.BLOGS)) {
@@ -27,13 +33,29 @@ public class SuperMegaTest {
             directory = "mails";
         }
 
+        for (int features = 10; features < MAX_FEATURES; features += 10) {
+            for (int minFreq = 1; minFreq < MAX_MIN_FREQ; minFreq++) {
+                for (int maxFreq = MAX_MIN_FREQ + 1; maxFreq < MAX_MAX_FREQ; maxFreq += 10) {
+                    double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
+                    if (thisTestResult > currentBestResult) {
+                        currentBestResult = thisTestResult;
+                        bestVariables.clear();
+                        bestVariables.add(features);
+                        bestVariables.add(minFreq);
+                        bestVariables.add(maxFreq);
+                    }
+                    System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + currentBestResult + "\n");
+                }
+            }
+        }
 
 
 
-        System.out.println("RESULT IS: " + currentBestResult);
+
+        System.out.println("RESULT IS: " + currentBestResult + " " + bestVariables);
     }
 
-    public double megaTest(String directory, int amountOfFeatures, double smoothingConstant, int min, int max) {
+    public static double megaTest(String directory, int amountOfFeatures, double smoothingConstant, int min, int max) {
         NaiveBayesianClassifier.setDirectory(directory);
         NaiveBayesianClassifier.setAmountOfFeatures((amountOfFeatures));
         NaiveBayesianClassifier.setSmoothingConstant((smoothingConstant));
@@ -77,14 +99,16 @@ public class SuperMegaTest {
 
         //Print results
         System.out.println("");
+        double result = 0.0;
         for (String className : NaiveBayesianClassifier.getTrainer().getVocabularyBuilder().getClasses()) {
-            System.out.println("Classified " + correctlyClassifiedFilesPerClass.get(className)
-                    + " of " + totalFilesPerClass.get(className)
-                    + " " + className + "-files correctly as " + className + "\t("
-                    + (double)correctlyClassifiedFilesPerClass.get(className) /
-                    (double)totalFilesPerClass.get(className) * 100 + "%)");
+            result = result + (double)correctlyClassifiedFilesPerClass.get(className) /
+                    (double)totalFilesPerClass.get(className) * 100;
         }
-        System.out.println((double)correctlyClassified / (double)testFiles.length * 100 + "% correctly classified");
-        return (double)correctlyClassified / (double)testFiles.length * 100;
+        return result;
     }
 }
+
+
+//100% F 50% M
+//2/3 F 1/3 M
+//
