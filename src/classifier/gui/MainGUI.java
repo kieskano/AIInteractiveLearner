@@ -5,6 +5,7 @@ import classifier.controller.NaiveBayesianClassifier;
 import classifier.controller.Trainer;
 import classifier.controller.Updater;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -160,11 +161,16 @@ public class MainGUI extends Application {
                             String result = classify();
                             Object monitor = new Object();
                             ResultGUI rg = new ResultGUI(result, monitor);
-                            try {
-                                rg.start(new Stage());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        rg.start(new Stage());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
                             synchronized (monitor) {
                                 try {
                                     monitor.wait();
