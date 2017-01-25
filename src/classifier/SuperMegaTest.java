@@ -113,7 +113,7 @@ public class SuperMegaTest {
             if (CORPUS.equals(Corpus.BLOGS)) {
                 fileTrueClass = file.getName().substring(0, 1);
             } else if (CORPUS.equals(Corpus.MAIL)) {
-                fileTrueClass = "SP";
+                fileTrueClass = file.getName().substring(0,1).equals("s") ? "spam" : "ham";
             }
             String result = NaiveBayesianClassifier.getClassifier().classify(file.getName());
             if (result.equals(fileTrueClass)) {
