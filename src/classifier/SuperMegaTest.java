@@ -17,7 +17,7 @@ public class SuperMegaTest {
 
     public enum Corpus{MAIL, BLOGS};
 
-    public static final Corpus CORPUS = Corpus.BLOGS;
+    private static Corpus corpus = Corpus.BLOGS;
     public static final int MAX_FEATURES = 20000;
     public static final int MAX_MIN_FREQ = 49;
     public static final int MAX_MAX_FREQ = 10000;
@@ -31,16 +31,22 @@ public class SuperMegaTest {
         List<Integer> bestVariables = new ArrayList<>();
         String directory = "";
 
-        if (CORPUS.equals(Corpus.BLOGS)) {
+        if (args[0].equals("blogs")) {
+            corpus = Corpus.BLOGS;
+        } else if (args[0].equals("mail")) {
+            corpus = Corpus.MAIL;
+        }
+
+        if (corpus.equals(Corpus.BLOGS)) {
             directory = "blogs";
-        } else if (CORPUS.equals(Corpus.MAIL)) {
+        } else if (corpus.equals(Corpus.MAIL)) {
             directory = "mails";
         }
 
         if (args.length > 0) {
-            maxFeatures = Integer.parseInt(args[0]);
-            maxMinFreq = Integer.parseInt(args[0]);
-            maxMaxFreq = Integer.parseInt(args[0]);
+            maxFeatures = Integer.parseInt(args[1]);
+            maxMinFreq = Integer.parseInt(args[2]);
+            maxMaxFreq = Integer.parseInt(args[3]);
             for (int features = 10; features < maxFeatures; features += 10) {
                 for (int minFreq = 1; minFreq < maxMinFreq; minFreq++) {
                     for (int maxFreq = maxMinFreq + 1; maxFreq < maxMaxFreq; maxFreq += 10) {
@@ -110,9 +116,9 @@ public class SuperMegaTest {
         int correctlyClassified = 0;
         for (File file : testFiles) {
             String fileTrueClass = "";
-            if (CORPUS.equals(Corpus.BLOGS)) {
+            if (corpus.equals(Corpus.BLOGS)) {
                 fileTrueClass = file.getName().substring(0, 1);
-            } else if (CORPUS.equals(Corpus.MAIL)) {
+            } else if (corpus.equals(Corpus.MAIL)) {
                 fileTrueClass = file.getName().substring(0,1).equals("s") ? "spam" : "ham";
             }
             String result = NaiveBayesianClassifier.getClassifier().classify(file.getName());
