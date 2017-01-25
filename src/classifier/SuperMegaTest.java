@@ -25,6 +25,8 @@ public class SuperMegaTest {
     private static int maxFeatures;
     private static int maxMinFreq;
     private static int maxMaxFreq;
+    private static int incrFeat;
+    private static int incrMaxFreq;
 
     public static void main(String[] args) {
         double currentBestResult = 0;
@@ -47,9 +49,12 @@ public class SuperMegaTest {
             maxFeatures = Integer.parseInt(args[1]);
             maxMinFreq = Integer.parseInt(args[2]);
             maxMaxFreq = Integer.parseInt(args[3]);
-            for (int features = 10; features < maxFeatures; features += 10) {
+            incrFeat = Integer.parseInt(args[4]);
+            incrMaxFreq = Integer.parseInt(args[5]);
+
+            for (int features = 10; features < maxFeatures; features += incrFeat) {
                 for (int minFreq = 1; minFreq < maxMinFreq; minFreq++) {
-                    for (int maxFreq = maxMinFreq + 1; maxFreq < maxMaxFreq; maxFreq += 10) {
+                    for (int maxFreq = maxMinFreq + 1; maxFreq < maxMaxFreq; maxFreq += incrMaxFreq) {
                         System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
                         double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
                         if (thisTestResult > currentBestResult) {
