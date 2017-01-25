@@ -82,4 +82,6 @@ public class MegaTest {
 //    Classified 16 of 25 F-files correctly as F	(64.0%)
 //    Classified 10 of 25 M-files correctly as M	(40.0%)
 //    52.0% correctly classified
+
+    //74% 2500 1 8 8000 blogs
 }
