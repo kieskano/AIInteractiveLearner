@@ -84,4 +84,5 @@ public class MegaTest {
 //    52.0% correctly classified
 
     //74% 2500 1 8 8000 blogs
+    //80    2700 1 8 1550
 }
