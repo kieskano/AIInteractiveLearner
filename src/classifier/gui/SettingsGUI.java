@@ -71,20 +71,20 @@ public class SettingsGUI extends Application {
         layout.add(tfMaxFrequency, 1, 3);
 
         Button btnSave = new Button("Save");
-        Button btnExit = new Button("Exit");
-        btnSave.setTranslateX(15);
-        btnExit.setTranslateX(25);
+        Button btnCancel = new Button("Cancel");
+        btnCancel.setTranslateX(7);
         FlowPane fp = new FlowPane();
         fp.getChildren().add(btnSave);
-        fp.getChildren().add(btnExit);
+        fp.getChildren().add(btnCancel);
 
         btnSave.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 updateVariables();
+                primaryStage.close();
             }
         });
-        btnExit.setOnAction(new EventHandler<ActionEvent>() {
+        btnCancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 primaryStage.close();

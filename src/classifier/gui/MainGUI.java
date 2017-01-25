@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -79,6 +80,29 @@ public class MainGUI extends Application {
         btnStart = new Button("Start");
         btnStart.setTranslateX(270);
         btnStart.setTranslateY(200);
+        btnStart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                topText.setText("Select a file to classify");
+                tfCorpusLocation.setText("");
+                btnStart.setVisible(false);
+                btnSettings.setVisible(false);
+                Button btnClassify = new Button("Classify");
+                btnClassify.setTranslateX(-50);
+                btnClassify.setTranslateY(100);
+                layout.getChildren().add(btnClassify);
+                btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        FileChooser fc = new FileChooser();
+                        File selectedFile = fc.showOpenDialog(primaryStage);
+                        if (selectedFile != null) {
+                            tfCorpusLocation.setText(selectedFile.getAbsolutePath());
+                        }
+                    }
+                });
+            }
+        });
 //        btnStart.setTranslateX((primaryStage.getWidth() - btnStart.getWidth() - 10) - btnSettings.getWidth());
 //        btnStart.setTranslateY((primaryStage.getHeight() - btnStart.getHeight() - 10) - btnSettings.getHeight() - tfCorpusLocation.getHeight());
 
