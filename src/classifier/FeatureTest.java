@@ -7,7 +7,7 @@ import classifier.model.Word;
 public class FeatureTest {
 
     public static void main(String[] args) {
-        VocabularyBuilder vocabularyBuilder = new VocabularyBuilder("test4classes");
+        VocabularyBuilder vocabularyBuilder = new VocabularyBuilder("blogs");
         vocabularyBuilder.loadWords();
         System.out.println(vocabularyBuilder.getWordList().size());
         vocabularyBuilder.cleanVocabulary(6, 1000);
