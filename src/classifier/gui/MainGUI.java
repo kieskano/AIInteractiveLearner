@@ -1,11 +1,13 @@
 package classifier.gui;
 
 import javafx.application.Application;
+import javafx.application.Preloader;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
@@ -30,6 +32,11 @@ public class MainGUI extends Application {
     private Button btnBrowse;
     private Button btnSettings;
     private Button btnStart;
+    private Button btnClassify;
+    private Button btnBack;
+    private Text topText;
+    private String corpusDirPath;
+    private String filePath;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,7 +53,7 @@ public class MainGUI extends Application {
         tfCorpusLocation.setTranslateY(50);
         tfCorpusLocation.setPrefWidth(300);
 
-        Text topText = new Text("Select corpus directory");
+        topText = new Text("Select corpus directory");
 
         btnBrowse = new Button("Browse");
         btnBrowse.setTranslateX(tfCorpusLocation.getTranslateX() + tfCorpusLocation.getWidth() + 5);
@@ -83,39 +90,101 @@ public class MainGUI extends Application {
         btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                topText.setText("Select a file to classify");
-                tfCorpusLocation.setText("");
-                btnStart.setVisible(false);
-                btnSettings.setVisible(false);
-                Button btnClassify = new Button("Classify");
-                btnClassify.setTranslateX(-50);
-                btnClassify.setTranslateY(100);
-                layout.getChildren().add(btnClassify);
-                btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        FileChooser fc = new FileChooser();
-                        File selectedFile = fc.showOpenDialog(primaryStage);
-                        if (selectedFile != null) {
-                            tfCorpusLocation.setText(selectedFile.getAbsolutePath());
-                        }
-                    }
-                });
+                File file = new File(tfCorpusLocation.getText());
+                if (file.exists() && file.isDirectory()) {
+                    corpusDirPath = tfCorpusLocation.getText();
+                    switchToClassifyScreen();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Could not load directory");
+                    alert.setContentText("Make sure the given path is a correct directory!");
+                    alert.show();
+                }
             }
         });
-//        btnStart.setTranslateX((primaryStage.getWidth() - btnStart.getWidth() - 10) - btnSettings.getWidth());
-//        btnStart.setTranslateY((primaryStage.getHeight() - btnStart.getHeight() - 10) - btnSettings.getHeight() - tfCorpusLocation.getHeight());
 
+        btnClassify = new Button("Classify");
+        btnClassify.setTranslateX(-50);
+        btnClassify.setTranslateY(100);
+        btnClassify.setVisible(false);
+        btnClassify.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File file = new File(tfCorpusLocation.getText());
+                if (file.exists() && file.isFile()) {
+                    filePath = tfCorpusLocation.getText();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Could not load file");
+                    alert.setContentText("Make sure the given path is a correct file!");
+                    alert.show();
+                }
+            }
+        });
+
+        btnBack = new Button("Back");
+        btnBack.setTranslateX(-262);
+        btnBack.setTranslateY(200);
+        btnBack.setVisible(false);
+        btnBack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switchToStartScreen();
+            }
+        });
 
         layout.getChildren().add(tfCorpusLocation);
         layout.getChildren().add(btnBrowse);
         layout.getChildren().add(btnSettings);
         layout.getChildren().add(btnStart);
         layout.getChildren().add(topText);
+        layout.getChildren().add(btnClassify);
+        layout.getChildren().add(btnBack);
         root.getChildren().add(layout);
         scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void switchToClassifyScreen() {
+        topText.setText("Select a file to classify");
+        tfCorpusLocation.setText("");
+        btnStart.setVisible(false);
+        btnBack.setVisible(true);
+        btnSettings.setVisible(false);
+        btnClassify.setVisible(true);
+        btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fc = new FileChooser();
+                File selectedFile = fc.showOpenDialog(primaryStage);
+                if (selectedFile != null) {
+                    tfCorpusLocation.setText(selectedFile.getAbsolutePath());
+                }
+            }
+        });
+    }
+
+    public void switchToStartScreen() {
+        topText.setText("Select corpus directory");
+        tfCorpusLocation.setText("");
+        btnStart.setVisible(true);
+        btnBack.setVisible(false);
+        btnSettings.setVisible(true);
+        btnClassify.setVisible(false);
+        btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                DirectoryChooser dc = new DirectoryChooser();
+                File selectedDirectory = dc.showDialog(primaryStage);
+
+                if (selectedDirectory != null) {
+                    tfCorpusLocation.setText(selectedDirectory.getAbsolutePath());
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {
