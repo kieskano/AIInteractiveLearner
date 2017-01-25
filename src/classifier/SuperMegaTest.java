@@ -15,19 +15,18 @@ import static classifier.controller.Classifier.TEST_DIRECTORY_NAME;
 
 public class SuperMegaTest {
 
-    public enum Corpus{MAIL, BLOGS};
+    public enum Corpus {MAIL, BLOGS}
+
+    ;
 
     private static Corpus corpus = Corpus.BLOGS;
-    public static final int MAX_FEATURES = 20000;
-    public static final int MAX_MIN_FREQ = 49;
-    public static final int MAX_MAX_FREQ = 10000;
-
     private static int maxFeatures;
     private static int maxMinFreq;
     private static int maxMaxFreq;
     private static int incrFeat;
     private static int incrMaxFreq;
     private static int featStart;
+    private static int maxFreqStart;
 
     public static void main(String[] args) {
         double currentBestResult = 0;
@@ -46,50 +45,31 @@ public class SuperMegaTest {
             directory = "mails";
         }
 
-        if (args.length > 0) {
-            maxFeatures = Integer.parseInt(args[1]);
-            maxMinFreq = Integer.parseInt(args[2]);
-            maxMaxFreq = Integer.parseInt(args[3]);
-            incrFeat = Integer.parseInt(args[4]);
-            incrMaxFreq = Integer.parseInt(args[5]);
-            featStart = Integer.parseInt(args[6]);
 
-            for (int features = featStart; features < maxFeatures; features += incrFeat) {
-                for (int minFreq = 1; minFreq < maxMinFreq; minFreq++) {
-                    for (int maxFreq = maxMinFreq + 1; maxFreq < maxMaxFreq; maxFreq += incrMaxFreq) {
-                        System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
-                        double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
-                        if (thisTestResult > currentBestResult) {
-                            currentBestResult = thisTestResult;
-                            bestVariables.clear();
-                            bestVariables.add(features);
-                            bestVariables.add(minFreq);
-                            bestVariables.add(maxFreq);
-                        }
-                        System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + " " + currentBestResult + "\n");
+        maxFeatures = Integer.parseInt(args[1]);
+        maxMinFreq = Integer.parseInt(args[2]);
+        maxMaxFreq = Integer.parseInt(args[3]);
+        incrFeat = Integer.parseInt(args[4]);
+        incrMaxFreq = Integer.parseInt(args[5]);
+        featStart = Integer.parseInt(args[6]);
+        maxFreqStart = Integer.parseInt(args[7]);
+
+        for (int features = featStart; features < maxFeatures; features += incrFeat) {
+            for (int minFreq = 1; minFreq < maxMinFreq; minFreq++) {
+                for (int maxFreq = maxFreqStart; maxFreq < maxMaxFreq; maxFreq += incrMaxFreq) {
+                    System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
+                    double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
+                    if (thisTestResult > currentBestResult) {
+                        currentBestResult = thisTestResult;
+                        bestVariables.clear();
+                        bestVariables.add(features);
+                        bestVariables.add(minFreq);
+                        bestVariables.add(maxFreq);
                     }
-                }
-            }
-        } else {
-            for (int features = 10; features < MAX_FEATURES; features += 10) {
-                for (int minFreq = 1; minFreq < MAX_MIN_FREQ; minFreq++) {
-                    for (int maxFreq = MAX_MIN_FREQ + 1; maxFreq < MAX_MAX_FREQ; maxFreq += 10) {
-                        System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
-                        double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
-                        if (thisTestResult > currentBestResult) {
-                            currentBestResult = thisTestResult;
-                            bestVariables.clear();
-                            bestVariables.add(features);
-                            bestVariables.add(minFreq);
-                            bestVariables.add(maxFreq);
-                        }
-                        System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + " " + currentBestResult + "\n");
-                    }
+                    System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + " " + currentBestResult + "\n");
                 }
             }
         }
-
-
 
 
         System.out.println("RESULT IS: " + currentBestResult + " " + bestVariables);
@@ -126,7 +106,7 @@ public class SuperMegaTest {
             if (corpus.equals(Corpus.BLOGS)) {
                 fileTrueClass = file.getName().substring(0, 1);
             } else if (corpus.equals(Corpus.MAIL)) {
-                fileTrueClass = file.getName().substring(0,1).equals("s") ? "spam" : "ham";
+                fileTrueClass = file.getName().substring(0, 1).equals("s") ? "spam" : "ham";
             }
             String result = NaiveBayesianClassifier.getClassifier().classify(file.getName());
             if (result.equals(fileTrueClass)) {
@@ -141,10 +121,10 @@ public class SuperMegaTest {
         System.out.println("");
         double result = 0.0;
         for (String className : NaiveBayesianClassifier.getTrainer().getVocabularyBuilder().getClasses()) {
-            System.out.println(className + " " + (double)correctlyClassifiedFilesPerClass.get(className) /
-                    (double)totalFilesPerClass.get(className) * 100);
-            result = result + (double)correctlyClassifiedFilesPerClass.get(className) /
-                    (double)totalFilesPerClass.get(className) * 100;
+            System.out.println(className + " " + (double) correctlyClassifiedFilesPerClass.get(className) /
+                    (double) totalFilesPerClass.get(className) * 100);
+            result = result + (double) correctlyClassifiedFilesPerClass.get(className) /
+                    (double) totalFilesPerClass.get(className) * 100;
         }
         return result;
     }
