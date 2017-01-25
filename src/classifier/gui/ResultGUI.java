@@ -34,7 +34,7 @@ public class ResultGUI extends Application {
     private Object monitor;
 
     public ResultGUI(String result, Object monitor) {
-        this.result = "bleh";
+        this.result = result;
         this.monitor = monitor;
     }
 
