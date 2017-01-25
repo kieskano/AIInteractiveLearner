@@ -44,9 +44,9 @@ public class MegaTest {
         File[] testFiles = folder.listFiles();
         int correctlyClassified = 0;
         for (File file : testFiles) {
-            String fileTrueClass = file.getName().substring(0,1); // String fileTrueClass = file.getName().substring(0,1).equals("s") ? "spam" : "ham";
+            String fileTrueClass = file.getName().substring(0,1).equals("s") ? "spam" : "ham";
             String result = NaiveBayesianClassifier.getClassifier().classify(file.getName());
-            if (result.equals(fileTrueClass)) {//(result.equals("spam") && fileTrueClass.equals("")) || (!result.equals("spam") && !fileTrueClass.equals(""))) {
+            if (result.equals(fileTrueClass)) {
                 correctlyClassified++;
                 correctlyClassifiedFilesPerClass.replace(fileTrueClass, correctlyClassifiedFilesPerClass.get(fileTrueClass) + 1);
             }
@@ -82,6 +82,12 @@ public class MegaTest {
 //    Classified 16 of 25 F-files correctly as F	(64.0%)
 //    Classified 10 of 25 M-files correctly as M	(40.0%)
 //    52.0% correctly classified
+
+
+//    [600, 6, 16051] 186%
+//    [1100, 1, 18551] 190%
+//    [1100, 6, 10551] 191%
+//    [1600, 5, 10551] 193%
 
     //74% 2500 1 8 8000 blogs
     //80    2700 1 8 1550
