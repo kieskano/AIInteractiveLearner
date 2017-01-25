@@ -25,6 +25,19 @@ public class Updater {
         }
     }
 
+    public Updater(String directoryPath) {
+        classes = new ArrayList<>();
+        directory = directoryPath;
+        //Determine classes
+        File folder = new File(directory);
+        File[] classDirs = folder.listFiles();
+        for (File file : classDirs) {
+            if (file.isDirectory()) {
+                classes.add(file.getName());
+            }
+        }
+    }
+
     public void resetTrainingData() {
         for (String classDirectory : classes) {
             File classDirFile = new File(directory + File.separator + VocabularyBuilder.TRAIN_DIRECTORY_NAME + File.separator + classDirectory);

@@ -21,6 +21,18 @@ public class Classifier {
     public static final int MIN_FREQ_MOD = 3;
 
     public String classify(String filename) {
+        String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
+                + File.separator + filename;
+        File unclassifiedFile = new File(fileLocation);
+        return calculate(unclassifiedFile);
+    }
+
+    public String classify(File file) {
+        return calculate(file);
+    }
+
+
+    public String calculate(File unclassifiedFile) {
         words = new ArrayList<>();
         documentFeatures = new ArrayList<>();
         chances = new HashMap<>();
@@ -29,9 +41,7 @@ public class Classifier {
 
         System.out.println("-|- Started classification");
         String result = "";
-        String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
-                + File.separator + filename;
-        File unclassifiedFile = new File(fileLocation);
+
 
 
         System.out.println("-|- Reading file...");

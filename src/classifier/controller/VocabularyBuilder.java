@@ -27,11 +27,11 @@ public class VocabularyBuilder {
     private List<String> classes = new ArrayList<>();
     private double totalNrOfFiles = 0;
 
-    public VocabularyBuilder(String derectory) {
-        this.directory = derectory;
+    public VocabularyBuilder(String directory) {
+        this.directory = directory;
 
         //Determine classes
-        File folder = new File(derectory + File.separator + TRAIN_DIRECTORY_NAME);
+        File folder = new File(directory + File.separator + TRAIN_DIRECTORY_NAME);
         File[] classDirs = folder.listFiles();
         for (File file : classDirs) {
             if (file.isDirectory()) {
@@ -44,7 +44,7 @@ public class VocabularyBuilder {
 
         //Determine filenames
         for (String classDirectory : classes) {
-            File classDirFile = new File(derectory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory);
+            File classDirFile = new File(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory);
             File[] trainFiles = classDirFile.listFiles();
             for (File file : trainFiles) {
                 if (file.isFile()) {

@@ -1,5 +1,9 @@
 package classifier.gui;
 
+import classifier.controller.Classifier;
+import classifier.controller.NaiveBayesianClassifier;
+import classifier.controller.Trainer;
+import classifier.controller.Updater;
 import javafx.application.Application;
 import javafx.application.Preloader;
 import javafx.event.ActionEvent;
@@ -14,6 +18,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -23,6 +28,26 @@ import java.io.File;
  * Created by Wijtse on 25-1-2017.
  */
 public class MainGUI extends Application {
+
+    public enum State {
+        UNTRAINED, TRAINING, TRAINED, CLASSIFYING;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case UNTRAINED:
+                    return "State: Untrained";
+                case TRAINING:
+                    return "State: Training";
+                case TRAINED:
+                    return "State: Trained";
+                case CLASSIFYING:
+                    return "State: Classifying";
+                default:
+                    return "";
+            }
+        }
+    }
 
     private Stage primaryStage;
     private Group root;
@@ -35,20 +60,24 @@ public class MainGUI extends Application {
     private Button btnClassify;
     private Button btnBack;
     private Text topText;
+    private Text statusText;
     private String corpusDirPath;
     private String filePath;
+    private State state;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.root = new Group();
         this.layout = new FlowPane();
+        state = State.UNTRAINED;
+
 
         primaryStage.setTitle("NaiveBayesianClassifier");
         primaryStage.setWidth(400);
         primaryStage.setHeight(300);
 
-        tfCorpusLocation = new TextField();
+        tfCorpusLocation = new TextField();//new TextField("C:\\Users\\Wijtse\\IdeaProjects\\AIInteractiveLearner\\blogs");
         tfCorpusLocation.setTranslateX(10);
         tfCorpusLocation.setTranslateY(50);
         tfCorpusLocation.setPrefWidth(300);
@@ -77,7 +106,10 @@ public class MainGUI extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    new SettingsGUI().start(new Stage());
+                    Stage stage = new Stage();
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.initOwner(primaryStage.getScene().getWindow());
+                    new SettingsGUI().start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -94,6 +126,13 @@ public class MainGUI extends Application {
                 if (file.exists() && file.isDirectory()) {
                     corpusDirPath = tfCorpusLocation.getText();
                     switchToClassifyScreen();
+//                    state = State.TRAINING;
+                    statusText.setText(state.toString());
+                    new Thread() {
+                        public void run() {
+                            train();
+                        }
+                    }.start();
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -114,6 +153,30 @@ public class MainGUI extends Application {
                 File file = new File(tfCorpusLocation.getText());
                 if (file.exists() && file.isFile()) {
                     filePath = tfCorpusLocation.getText();
+                    state = State.CLASSIFYING;
+                    statusText.setText(state.toString());
+                    new Thread() {
+                        public void run() {
+                            String result = classify();
+                            Object monitor = new Object();
+                            ResultGUI rg = new ResultGUI(result, monitor);
+                            try {
+                                rg.start(new Stage());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            synchronized (monitor) {
+                                try {
+                                    monitor.wait();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            if (rg.getAssignedClass() != null) {
+                                NaiveBayesianClassifier.getUpdater().copyToTrainingSet(new File(filePath), rg.getAssignedClass());
+                            }
+                        }
+                    }.start();
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -135,6 +198,10 @@ public class MainGUI extends Application {
             }
         });
 
+        statusText = new Text(state.toString());
+        statusText.setTranslateX(150);
+        statusText.setTranslateY(180);
+
         layout.getChildren().add(tfCorpusLocation);
         layout.getChildren().add(btnBrowse);
         layout.getChildren().add(btnSettings);
@@ -142,10 +209,31 @@ public class MainGUI extends Application {
         layout.getChildren().add(topText);
         layout.getChildren().add(btnClassify);
         layout.getChildren().add(btnBack);
+//        layout.getChildren().add(statusText);
         root.getChildren().add(layout);
         scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private String classify() {
+        return NaiveBayesianClassifier.getClassifier().classify(new File(filePath));
+    }
+
+    private void train() {
+        NaiveBayesianClassifier.setDirectory(null);
+        NaiveBayesianClassifier.setAmountOfFeatures(SettingsGUI.MAX_FEATURES);
+        NaiveBayesianClassifier.setSmoothingConstant(SettingsGUI.SMOOTHING_CONSTANT);
+        NaiveBayesianClassifier.setMinFreq(SettingsGUI.MIN_FREQUENCY);
+        NaiveBayesianClassifier.setMaxFreq(SettingsGUI.MAX_FREQUENCY);
+
+        NaiveBayesianClassifier.setTrainer(new Trainer());
+        NaiveBayesianClassifier.setClassifier(new Classifier());
+        NaiveBayesianClassifier.setUpdater(new Updater(corpusDirPath));
+
+        NaiveBayesianClassifier.getTrainer().train(corpusDirPath);
+//        state = State.TRAINED;
+//        statusText.setText(state.toString());
     }
 
     public void switchToClassifyScreen() {

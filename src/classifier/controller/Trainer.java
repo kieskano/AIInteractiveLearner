@@ -16,12 +16,20 @@ public class Trainer {
 
     public void train() {
         System.out.println("|-- Starting training");
+        vocabularyBuilder = new VocabularyBuilder(NaiveBayesianClassifier.getDirectory());
+        realTrain();
+    }
 
+    public void train(String directory) {
+        System.out.println("|-- Starting training");
+        vocabularyBuilder = new VocabularyBuilder(directory);
+        realTrain();
+    }
+
+    public void realTrain() {
         vocab = new HashMap<>();
         cleanVocab = new HashMap<>();
         features = new HashMap<>();
-
-        vocabularyBuilder = new VocabularyBuilder(NaiveBayesianClassifier.getDirectory());
 
         //Fill vocab lists
         System.out.println("|-- Filling vocabulary lists...");
