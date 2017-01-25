@@ -18,9 +18,13 @@ public class SuperMegaTest {
     public enum Corpus{MAIL, BLOGS};
 
     public static final Corpus CORPUS = Corpus.BLOGS;
-    public static final int MAX_FEATURES = 100;
+    public static final int MAX_FEATURES = 20000;
     public static final int MAX_MIN_FREQ = 49;
-    public static final int MAX_MAX_FREQ = 100;
+    public static final int MAX_MAX_FREQ = 10000;
+
+    private static int maxFeatures;
+    private static int maxMinFreq;
+    private static int maxMaxFreq;
 
     public static void main(String[] args) {
         double currentBestResult = 0;
@@ -33,18 +37,41 @@ public class SuperMegaTest {
             directory = "mails";
         }
 
-        for (int features = 10; features < MAX_FEATURES; features += 10) {
-            for (int minFreq = 1; minFreq < MAX_MIN_FREQ; minFreq++) {
-                for (int maxFreq = MAX_MIN_FREQ + 1; maxFreq < MAX_MAX_FREQ; maxFreq += 10) {
-                    double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
-                    if (thisTestResult > currentBestResult) {
-                        currentBestResult = thisTestResult;
-                        bestVariables.clear();
-                        bestVariables.add(features);
-                        bestVariables.add(minFreq);
-                        bestVariables.add(maxFreq);
+        if (args.length > 0) {
+            maxFeatures = Integer.parseInt(args[0]);
+            maxMinFreq = Integer.parseInt(args[0]);
+            maxMaxFreq = Integer.parseInt(args[0]);
+            for (int features = 10; features < maxFeatures; features += 10) {
+                for (int minFreq = 1; minFreq < maxMinFreq; minFreq++) {
+                    for (int maxFreq = maxMinFreq + 1; maxFreq < maxMaxFreq; maxFreq += 10) {
+                        System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
+                        double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
+                        if (thisTestResult > currentBestResult) {
+                            currentBestResult = thisTestResult;
+                            bestVariables.clear();
+                            bestVariables.add(features);
+                            bestVariables.add(minFreq);
+                            bestVariables.add(maxFreq);
+                        }
+                        System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + " " + currentBestResult + "\n");
                     }
-                    System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + currentBestResult + "\n");
+                }
+            }
+        } else {
+            for (int features = 10; features < MAX_FEATURES; features += 10) {
+                for (int minFreq = 1; minFreq < MAX_MIN_FREQ; minFreq++) {
+                    for (int maxFreq = MAX_MIN_FREQ + 1; maxFreq < MAX_MAX_FREQ; maxFreq += 10) {
+                        System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
+                        double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
+                        if (thisTestResult > currentBestResult) {
+                            currentBestResult = thisTestResult;
+                            bestVariables.clear();
+                            bestVariables.add(features);
+                            bestVariables.add(minFreq);
+                            bestVariables.add(maxFreq);
+                        }
+                        System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + " " + currentBestResult + "\n");
+                    }
                 }
             }
         }
@@ -101,6 +128,8 @@ public class SuperMegaTest {
         System.out.println("");
         double result = 0.0;
         for (String className : NaiveBayesianClassifier.getTrainer().getVocabularyBuilder().getClasses()) {
+            System.out.println(className + " " + (double)correctlyClassifiedFilesPerClass.get(className) /
+                    (double)totalFilesPerClass.get(className) * 100);
             result = result + (double)correctlyClassifiedFilesPerClass.get(className) /
                     (double)totalFilesPerClass.get(className) * 100;
         }
