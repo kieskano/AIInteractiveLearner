@@ -25,6 +25,11 @@ public class Classifier {
 
     public static final int MIN_FREQ_MOD = 3;
 
+    /**
+     * Classifies the given file.
+     * @param filename
+     * @return
+     */
     public String classify(String filename) {
         String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
                 + File.separator + filename;

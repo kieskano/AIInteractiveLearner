@@ -35,8 +35,8 @@ public class NaiveBayesianClassifier {
         trainer.train();
 
         Scanner sc = new Scanner(System.in);
+        System.out.println("|-- What is the name of the file you want to classify?");
         while (sc.hasNextLine()) {
-            System.out.println("|-- What is the name of the file you want to classify?");
             String filename = sc.nextLine();
             String result = classifier.classify(filename);
             System.out.println("--| Started updating");
@@ -72,7 +72,8 @@ public class NaiveBayesianClassifier {
             updater.copyToTrainingSet(classifiedFile, actualClass);
             System.out.println("--| Retraining...");
             trainer.train();
-            System.out.println("--| Updating complete");
+            System.out.println("--| Training complete");
+            System.out.println("|-- What is the name of the file you want to classify?");
         }
 
 
