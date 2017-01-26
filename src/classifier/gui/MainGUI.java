@@ -10,7 +10,9 @@ import javafx.application.Preloader;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -37,11 +39,11 @@ public class MainGUI extends Application {
         public String toString() {
             switch (this) {
                 case UNTRAINED:
-                    return "State: Untrained";
+                    return "State: Untrained  ";
                 case TRAINING:
-                    return "State: Training";
+                    return "State: Training     ";
                 case TRAINED:
-                    return "State: Trained";
+                    return "State: Trained         ";
                 case CLASSIFYING:
                     return "State: Classifying";
                 default:
@@ -126,12 +128,20 @@ public class MainGUI extends Application {
                 File file = new File(tfCorpusLocation.getText());
                 if (file.exists() && file.isDirectory()) {
                     corpusDirPath = tfCorpusLocation.getText();
-                    switchToClassifyScreen();
-//                    state = State.TRAINING;
+                    state = State.TRAINING;
                     statusText.setText(state.toString());
-                    new Thread() {
+                    disableEverything();
+                    new Thread(){
+                        @Override
                         public void run() {
                             train();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    enableEveryThing();
+                                    switchToClassifyScreen();
+                                }
+                            });
                         }
                     }.start();
                 } else {
@@ -156,9 +166,16 @@ public class MainGUI extends Application {
                     filePath = tfCorpusLocation.getText();
                     state = State.CLASSIFYING;
                     statusText.setText(state.toString());
+                    disableEverything();
                     new Thread() {
                         public void run() {
                             String result = classify();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    enableEveryThing();
+                                }
+                            });
                             Object monitor = new Object();
                             ResultGUI rg = new ResultGUI(result, monitor);
                             Platform.runLater(new Runnable() {
@@ -207,6 +224,7 @@ public class MainGUI extends Application {
         statusText = new Text(state.toString());
         statusText.setTranslateX(150);
         statusText.setTranslateY(180);
+        statusText.minWidth(300);
 
         layout.getChildren().add(tfCorpusLocation);
         layout.getChildren().add(btnBrowse);
@@ -215,7 +233,7 @@ public class MainGUI extends Application {
         layout.getChildren().add(topText);
         layout.getChildren().add(btnClassify);
         layout.getChildren().add(btnBack);
-//        layout.getChildren().add(statusText);
+        layout.getChildren().add(statusText);
         root.getChildren().add(layout);
         scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -223,7 +241,15 @@ public class MainGUI extends Application {
     }
 
     private String classify() {
-        return NaiveBayesianClassifier.getClassifier().classify(new File(filePath));
+        String result = NaiveBayesianClassifier.getClassifier().classify(new File(filePath));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                state = State.TRAINED;
+                statusText.setText(state.toString());
+            }
+        });
+        return result;
     }
 
     private void train() {
@@ -238,8 +264,31 @@ public class MainGUI extends Application {
         NaiveBayesianClassifier.setUpdater(new Updater(corpusDirPath));
 
         NaiveBayesianClassifier.getTrainer().train(corpusDirPath);
-//        state = State.TRAINED;
-//        statusText.setText(state.toString());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                state = State.TRAINED;
+                statusText.setText(state.toString());
+            }
+        });
+    }
+
+    private void disableEverything() {
+        scene.setCursor(Cursor.WAIT);
+        for(Node node : layout.getChildren()) {
+            if (!(node instanceof Text)) {
+                node.setDisable(true);
+            }
+        }
+    }
+
+    private void enableEveryThing() {
+        scene.setCursor(Cursor.DEFAULT);
+        for(Node node : layout.getChildren()) {
+            if (!(node instanceof Text)) {
+                node.setDisable(false);
+            }
+        }
     }
 
     public void switchToClassifyScreen() {
@@ -263,7 +312,7 @@ public class MainGUI extends Application {
 
     public void switchToStartScreen() {
         topText.setText("Select corpus directory");
-        tfCorpusLocation.setText("");
+        tfCorpusLocation.setText(corpusDirPath);
         btnStart.setVisible(true);
         btnBack.setVisible(false);
         btnSettings.setVisible(true);
