@@ -1,4 +1,4 @@
-package classifier;
+package classifier.test;
 
 import classifier.controller.Classifier;
 import classifier.controller.NaiveBayesianClassifier;
@@ -16,6 +16,10 @@ import static classifier.controller.Classifier.TEST_DIRECTORY_NAME;
  */
 public class MegaTwoTest {
 
+    /**
+     * This test is used to quickly test the success rate of the classifier with certain variables.
+     * @param args
+     */
     public static void main(String[] args) {
         //Setup
         NaiveBayesianClassifier.setDirectory(args[0]);

@@ -63,6 +63,9 @@ public class VocabularyBuilder {
         }
     }
 
+    /**
+     * Loads the words of the training data.
+     */
     public void loadWords() {
         for (String classDirectory : classes) {
             for (String fileName : files.get(classDirectory)) {
@@ -161,6 +164,11 @@ public class VocabularyBuilder {
         //System.out.println(words.get("people").toString());
     }
 
+    /**
+     * Cleans the vocabulary of words that occur too less or too many times in the training data.
+     * @param minFrequency minimum frequency a word has to occur.
+     * @param maxFrequency maximum frequency a word can occur.
+     */
     public void cleanVocabulary(int minFrequency, int maxFrequency) {
         ArrayList<String> wordsToRemove = new ArrayList<>();
         for (String word : words.keySet()) {
@@ -188,13 +196,6 @@ public class VocabularyBuilder {
 
     public List<String> getClasses() {
         return classes;
-    }
-
-    public static void main(String[] args) {
-//        VocabularyBuilder vb = new VocabularyBuilder("blogs");
-//        vb.loadWords();
-//        System.out.println(vb.getWordMap().get("hello").toString());
-
     }
 
     public Map<String,Double> getNumberOfFiles() {

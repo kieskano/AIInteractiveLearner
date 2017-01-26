@@ -39,7 +39,7 @@ public class Updater {
     }
 
     /**
-     * Cleans the training directories of files
+     * Cleans the training directories of files that were added by classifying.
      */
     public void resetTrainingData() {
         for (String classDirectory : classes) {
@@ -53,6 +53,11 @@ public class Updater {
         }
     }
 
+    /**
+     * Copies the given file to the train directory of the given class.
+     * @param file file.
+     * @param className destination class.
+     */
     public void copyToTrainingSet(File file, String className) {
         File destFile = new File(directory + File.separator + VocabularyBuilder.TRAIN_DIRECTORY_NAME + File.separator + className + File.separator + "classified" + file.getName());
         try {
@@ -62,6 +67,12 @@ public class Updater {
         }
     }
 
+    /**
+     * Copies the src file to the dest file
+     * @param src source file.
+     * @param dest destination file.
+     * @throws IOException
+     */
     private void copyFile(File src, File dest) throws  IOException {
         InputStream is = null;
         OutputStream os = null;

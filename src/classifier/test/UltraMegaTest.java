@@ -1,5 +1,4 @@
-package classifier;
-
+package classifier.test;
 import classifier.controller.Classifier;
 import classifier.controller.NaiveBayesianClassifier;
 import classifier.controller.Trainer;
@@ -13,24 +12,19 @@ import java.util.Map;
 
 import static classifier.controller.Classifier.TEST_DIRECTORY_NAME;
 
-public class SuperMegaTest {
+public class UltraMegaTest {
 
-    public enum Corpus {MAIL, BLOGS}
-
-    ;
+    public enum Corpus {MAIL, BLOGS};
 
     private static Corpus corpus = Corpus.BLOGS;
-    private static int maxFeatures;
-    private static int maxMinFreq;
-    private static int maxMaxFreq;
-    private static int incrFeat;
-    private static int incrMaxFreq;
-    private static int featStart;
-    private static int maxFreqStart;
 
+    /**
+     * This test is used to find the optimal variables to get the best success rate of the classifier
+     * @param args
+     */
     public static void main(String[] args) {
-        double currentBestResult = 0;
-        List<Integer> bestVariables = new ArrayList<>();
+        Map<Integer, Double> results = new HashMap<>();
+        List<Integer> keys = new ArrayList<>();
         String directory = "";
 
         if (args[0].equals("blogs")) {
@@ -45,34 +39,17 @@ public class SuperMegaTest {
             directory = "mails";
         }
 
-
-        maxFeatures = Integer.parseInt(args[1]);
-        maxMinFreq = Integer.parseInt(args[2]);
-        maxMaxFreq = Integer.parseInt(args[3]);
-        incrFeat = Integer.parseInt(args[4]);
-        incrMaxFreq = Integer.parseInt(args[5]);
-        featStart = Integer.parseInt(args[6]);
-        maxFreqStart = Integer.parseInt(args[7]);
-
-        for (int features = featStart; features < maxFeatures; features += incrFeat) {
-            for (int minFreq = 1; minFreq < maxMinFreq; minFreq++) {
-                for (int maxFreq = maxFreqStart; maxFreq < maxMaxFreq; maxFreq += incrMaxFreq) {
-                    System.out.println("Variables: [" + features + ", " + minFreq + ", " + maxFreq + "]");
-                    double thisTestResult = megaTest(directory, features, 1, minFreq, maxFreq);
-                    if (thisTestResult > currentBestResult) {
-                        currentBestResult = thisTestResult;
-                        bestVariables.clear();
-                        bestVariables.add(features);
-                        bestVariables.add(minFreq);
-                        bestVariables.add(maxFreq);
-                    }
-                    System.out.println("CURRENT BEST RESULT: " + " " + bestVariables + " " + currentBestResult + "\n");
-                }
-            }
+        for (int features = 100; features <= 3500; features += 100) {
+            System.out.println("Vocab size: [" + features + "]");
+            double thisTestResult = megaTest(directory, features, 1, 1, 13050);
+            keys.add(features);
+            results.put(features, thisTestResult);
         }
 
-
-        System.out.println("RESULT IS: " + currentBestResult + " " + bestVariables);
+        System.out.println("RESULTS:");
+        for (int key : keys) {
+            System.out.println(key + "\t\t||\t\t" + results.get(key));
+        }
     }
 
     public static double megaTest(String directory, int amountOfFeatures, double smoothingConstant, int min, int max) {
@@ -103,9 +80,9 @@ public class SuperMegaTest {
         int correctlyClassified = 0;
         for (File file : testFiles) {
             String fileTrueClass = "";
-            if (corpus.equals(Corpus.BLOGS)) {
+            if (corpus.equals(UltraMegaTest.Corpus.BLOGS)) {
                 fileTrueClass = file.getName().substring(0, 1);
-            } else if (corpus.equals(Corpus.MAIL)) {
+            } else if (corpus.equals(UltraMegaTest.Corpus.MAIL)) {
                 fileTrueClass = file.getName().substring(0, 1).equals("s") ? "spam" : "ham";
             }
             String result = NaiveBayesianClassifier.getClassifier().classify(file.getName());
@@ -123,10 +100,8 @@ public class SuperMegaTest {
         for (String className : NaiveBayesianClassifier.getTrainer().getVocabularyBuilder().getClasses()) {
             System.out.println(className + " " + (double) correctlyClassifiedFilesPerClass.get(className) /
                     (double) totalFilesPerClass.get(className) * 100);
-            result = result + (double) correctlyClassifiedFilesPerClass.get(className) /
-                    (double) totalFilesPerClass.get(className) * 100;
         }
-        return result;
+        return (double)correctlyClassified/(double)testFiles.length*100;
     }
 }
 

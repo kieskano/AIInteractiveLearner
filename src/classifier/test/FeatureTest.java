@@ -1,4 +1,4 @@
-package classifier;
+package classifier.test;
 
 import classifier.controller.FeatureSelect;
 import classifier.controller.VocabularyBuilder;
