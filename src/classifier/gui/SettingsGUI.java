@@ -19,9 +19,9 @@ import javafx.stage.Stage;
  */
 public class SettingsGUI extends Application {
 
-    public static int MAX_FEATURES = 2000;
+    public static int MAX_FEATURES = 2700;
     public static int SMOOTHING_CONSTANT = 1;
-    public static int MIN_FREQUENCY = 1;
+    public static int MIN_FREQUENCY = 5;
     public static int MAX_FREQUENCY = 6000;
 
     private Stage primaryStage;
