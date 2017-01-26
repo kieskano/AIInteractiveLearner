@@ -5,7 +5,10 @@ import classifier.model.Word;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Classifier {
@@ -47,7 +50,20 @@ public class Classifier {
         System.out.println("-|- Reading file...");
         List<String> lines = new ArrayList<>();
         try {
-            lines = Files.readAllLines(unclassifiedFile.toPath());
+            try {
+                lines = Files.readAllLines(unclassifiedFile.toPath(), Charset.defaultCharset());
+            } catch (MalformedInputException e) {
+                System.out.println("|-- Could not read " + unclassifiedFile.getName() + " with default charset. Trying different charsets...");
+                for (Charset charset : Charset.availableCharsets().values()) {
+                    try {
+                        lines = Files.readAllLines(unclassifiedFile.toPath(), charset);
+                        System.out.println("|-- Read " + unclassifiedFile.getName() + " with " + charset.toString());
+                        break;
+                    } catch (MalformedInputException ex) {
+                        throw ex;
+                    }
+                }
+            }
         } catch (IOException e) {
             System.out.println("-|- Error reading file, will now exit");
             System.exit(1);

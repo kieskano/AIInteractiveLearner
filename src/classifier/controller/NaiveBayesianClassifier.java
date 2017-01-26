@@ -1,10 +1,6 @@
 package classifier.controller;
 
-import classifier.model.Word;
-
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 import static classifier.controller.Classifier.TEST_DIRECTORY_NAME;
@@ -40,6 +36,7 @@ public class NaiveBayesianClassifier {
 
         Scanner sc = new Scanner(System.in);
         while (sc.hasNextLine()) {
+            System.out.println("|-- What is the name of the file you want to classify?");
             String filename = sc.nextLine();
             String result = classifier.classify(filename);
             System.out.println("--| Started updating");

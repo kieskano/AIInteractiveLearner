@@ -35,6 +35,7 @@ import java.util.Optional;
 public class MainGUI extends Application {
 
     private Button btnReset;
+    private boolean wentWell;
 
     public enum State {
         UNTRAINED, TRAINING, TRAINED, CLASSIFYING;
@@ -126,6 +127,7 @@ public class MainGUI extends Application {
         btnStart = new Button("Start");
         btnStart.setTranslateX(270);
         btnStart.setTranslateY(200);
+
         btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -138,12 +140,27 @@ public class MainGUI extends Application {
                     new Thread(){
                         @Override
                         public void run() {
-                            train();
+                            wentWell = true;
+                            try {
+                                train();
+                            } catch (Exception e) {
+                                wentWell = false;
+                            }
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
                                     enableEveryThing();
-                                    switchToClassifyScreen();
+                                    if (wentWell) {
+                                        switchToClassifyScreen();
+                                    } else {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                                        alert.setTitle("Error");
+                                        alert.setHeaderText("Could not complete training process");
+                                        alert.setContentText("Please make sure that the corpus directory has the correct structure.");
+                                        alert.show();
+                                        state = MainGUI.State.UNTRAINED;
+                                        statusText.setText(state.toString());
+                                    }
                                 }
                             });
                         }

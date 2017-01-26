@@ -5,6 +5,7 @@ import classifier.model.Word;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -66,10 +67,22 @@ public class VocabularyBuilder {
             for (String fileName : files.get(classDirectory)) {
                 List<String> lines = null;
                 try {
-                    lines = Files.readAllLines(Paths.get(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory + File.separator + fileName), Charset.defaultCharset());
+                    try {
+                        lines = Files.readAllLines(Paths.get(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory + File.separator + fileName), Charset.defaultCharset());
+                    } catch (MalformedInputException e) {
+                        System.out.println("|-- Could not read " + fileName + " with default charset. Trying different charsets...");
+                        for (Charset charset : Charset.availableCharsets().values()) {
+                            try {
+                                lines = Files.readAllLines(Paths.get(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory + File.separator + fileName), charset);
+                                System.out.println("|-- Read " + fileName + " with " + charset.toString());
+                                break;
+                            } catch (MalformedInputException ex) {
+                                throw ex;
+                            }
+                        }
+                    }
                 } catch (IOException e) {
-                    System.out.println("Could not read lines from file: " + fileName + " Because: " + e);
-                    System.exit(1);
+                    System.out.println("|-- Could not read lines from file: " + fileName + " Because: " + e);
                 }
                 Set<String> pastWords = new HashSet<>();
                 for (String line : lines) {
