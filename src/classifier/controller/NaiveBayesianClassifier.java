@@ -72,7 +72,7 @@ public class NaiveBayesianClassifier {
             updater.copyToTrainingSet(classifiedFile, actualClass);
             System.out.println("--| Retraining...");
             trainer.train();
-            System.out.println("--| Training complete");
+            System.out.println("--| Retraining complete");
             System.out.println("|-- What is the name of the file you want to classify?");
         }
 
