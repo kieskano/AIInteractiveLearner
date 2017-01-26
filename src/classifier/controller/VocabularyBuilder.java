@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.UnmappableCharacterException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -69,19 +70,20 @@ public class VocabularyBuilder {
                 try {
                     try {
                         lines = Files.readAllLines(Paths.get(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory + File.separator + fileName), Charset.defaultCharset());
-                    } catch (MalformedInputException e) {
+                    } catch (IOException e) {
                         System.out.println("|-- Could not read " + fileName + " with default charset. Trying different charsets...");
                         for (Charset charset : Charset.availableCharsets().values()) {
                             try {
+                                System.out.println("|-- Trying " + charset.toString());
                                 lines = Files.readAllLines(Paths.get(directory + File.separator + TRAIN_DIRECTORY_NAME + File.separator + classDirectory + File.separator + fileName), charset);
                                 System.out.println("|-- Read " + fileName + " with " + charset.toString());
                                 break;
-                            } catch (MalformedInputException ex) {
-                                throw ex;
+                            } catch (IOException ex) {
+                                //
                             }
                         }
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     System.out.println("|-- Could not read lines from file: " + fileName + " Because: " + e);
                 }
                 Set<String> pastWords = new HashSet<>();

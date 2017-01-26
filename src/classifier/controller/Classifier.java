@@ -2,11 +2,13 @@ package classifier.controller;
 
 
 import classifier.model.Word;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.UnmappableCharacterException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -52,19 +54,20 @@ public class Classifier {
         try {
             try {
                 lines = Files.readAllLines(unclassifiedFile.toPath(), Charset.defaultCharset());
-            } catch (MalformedInputException e) {
-                System.out.println("|-- Could not read " + unclassifiedFile.getName() + " with default charset. Trying different charsets...");
+            } catch (IOException e) {
+                System.out.println("-|- Could not read " + unclassifiedFile.getName() + " with default charset. Trying different charsets...");
                 for (Charset charset : Charset.availableCharsets().values()) {
                     try {
+                        System.out.println("-|- Trying " + charset.toString());
                         lines = Files.readAllLines(unclassifiedFile.toPath(), charset);
-                        System.out.println("|-- Read " + unclassifiedFile.getName() + " with " + charset.toString());
+                        System.out.println("-|- Read " + unclassifiedFile.getName() + " with " + charset.toString());
                         break;
-                    } catch (MalformedInputException ex) {
-                        throw ex;
+                    } catch (IOException ex) {
+                        //
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("-|- Error reading file, will now exit");
             System.exit(1);
         }
