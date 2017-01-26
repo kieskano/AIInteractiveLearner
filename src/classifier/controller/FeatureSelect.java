@@ -11,6 +11,11 @@ import static java.lang.Integer.min;
 
 public class FeatureSelect {
 
+    /**
+     * Calculates the E table of the given word.
+     * @param word word.
+     * @return E table of the word.
+     */
     public static Map<String, List<Double>> getE(Word word) {
         Map<String, List<Double>> result = new HashMap<>();
         Map<String, List<Double>> M = word.getM();
@@ -44,6 +49,11 @@ public class FeatureSelect {
         return result;
     }
 
+    /**
+     * Calculates the Chi-square of the given word.
+     * @param word word.
+     * @return Chi-square of the word.
+     */
     public static double getChisq(Word word) {
         double result = 0;
         Map<String, List<Double>> M = word.getM();
@@ -71,6 +81,13 @@ public class FeatureSelect {
         return result;
     }
 
+    /**
+     * Returns a filtered feature list with only the best features.
+     * @param in
+     * @param n
+     * @param c
+     * @return
+     */
     public static List<Word> getFeatures(List<Word> in, int n, String c) {
         List<Word> result = new ArrayList<>();
         for (int i = 0; i < in.size(); i++) {
@@ -95,6 +112,12 @@ public class FeatureSelect {
         return result;
     }
 
+    /**
+     * Returns a filtered feature list with only the best features.
+     * @param in
+     * @param n
+     * @return
+     */
     public static List<Word> getFeaturesNaive(List<Word> in, int n) {
         List<Word> result = in;
         Collections.sort(result, new ChiSquaredComparator());

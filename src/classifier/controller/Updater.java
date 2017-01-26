@@ -38,6 +38,9 @@ public class Updater {
         }
     }
 
+    /**
+     * Cleans the training directories of files
+     */
     public void resetTrainingData() {
         for (String classDirectory : classes) {
             File classDirFile = new File(directory + File.separator + VocabularyBuilder.TRAIN_DIRECTORY_NAME + File.separator + classDirectory);

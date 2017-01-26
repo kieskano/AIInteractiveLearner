@@ -27,21 +27,35 @@ public class Classifier {
 
     /**
      * Classifies the given file.
-     * @param filename
-     * @return
+     * @param filename Name of the file to be classified
+     * @return Name of the class the file has been classified as
      */
     public String classify(String filename) {
         String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
                 + File.separator + filename;
         File unclassifiedFile = new File(fileLocation);
-        return calculate(unclassifiedFile);
+
+        String result = null;
+        if (unclassifiedFile.exists() && unclassifiedFile.isFile()) {
+            result = calculate(unclassifiedFile);
+        }
+        return result;
     }
 
+    /**
+     * Classifies the given file.
+     * @param file file to be classified
+     * @return Name of the class the file has been classified as
+     */
     public String classify(File file) {
         return calculate(file);
     }
 
-
+    /**
+     * Classifies the given file.
+     * @param unclassifiedFile file to be classified
+     * @return Name of the class the file has been classified as
+     */
     public String calculate(File unclassifiedFile) {
         words = new ArrayList<>();
         documentFeatures = new ArrayList<>();
@@ -155,6 +169,13 @@ public class Classifier {
         return result;
     }
 
+    /**
+     * Cleans the given words of too frequent and too less frequent words.
+     * @param inWords The word list that needs to be cleaned.
+     * @param minFrequency The min frequency a word has to occur to not get removed.
+     * @param maxFrequency The max frequency a word has to occur to not get removed.
+     * @return the cleaned list.
+     */
     public List<String> cleanVocabulary(List<String> inWords, int minFrequency, int maxFrequency) {
         ArrayList<String> wordsToRemove = new ArrayList<>();
 
@@ -185,6 +206,11 @@ public class Classifier {
         return result;
     }
 
+    /**
+     * Calculates the log2 of the given double.
+     * @param in the input of the log2.
+     * @return the log2 of the input.
+     */
     private double log2(double in) {
         return Math.log(in)/Math.log(2);
     }
@@ -198,47 +224,3 @@ public class Classifier {
         this.chances = chances;
     }
 }
-//
-//
-//if (!documentFeatures.contains(word) && features.containsKey(word)) {
-//        documentFeatures.add(word);
-//        wordCountPerDocument.put(word, 1);
-//        for (String c : NaiveBayesianClassifier.getTrainer().getVocabularyBuilder().getClasses()) {
-//        Word currentFeature = features.get(word);
-//        int occurrencesPerWord= currentFeature.getOccurrencesPerClass().get(c);
-//        double smoothing = NaiveBayesianClassifier.getSmoothingConstant();
-//        double chance = (occurrencesPerWord + smoothing) /
-//        (totalWordCount.get(c) + (smoothing * features.size()));
-//        chancesPerWord.put(c, chance);
-//        }
-//        chances.put(word, chancesPerWord);
-//        } else if (features.containsKey(word)) {
-//        wordCountPerDocument.replace(word, wordCountPerDocument.get(word) + 1);
-//        }
-
-
-//if (!documentFeatures.contains(word)) {
-//        documentFeatures.add(word);
-//        wordCountPerDocument.put(word, 1);
-//        for (String c : NaiveBayesianClassifier.getTrainer().getVocabularyBuilder().getClasses()) {
-//        int occurrencesPerClass = 0;
-//        if (features.containsKey(word)) {
-//        Word currentFeature = features.get(word);
-//        occurrencesPerClass= currentFeature.getOccurrencesPerClass().get(c);
-//        }
-//        double smoothing = NaiveBayesianClassifier.getSmoothingConstant();
-//        double chance = (occurrencesPerClass + smoothing) /
-//        (totalWordCount.get(c) + (smoothing * features.size()));
-//        chancesPerWord.put(c, chance);
-//        }
-//        chances.put(word, chancesPerWord);
-//        } else {
-//        wordCountPerDocument.replace(word, wordCountPerDocument.get(word) + 1);
-//        }
-
-// 8 main 6 modif
-//Classified 18 of 25 M-files correctly as M	(72.0%)
-//        Classified 19 of 25 F-files correctly as F	(76.0%)
-//        74.0% correctly classified
-
-//1900 1 10 3500

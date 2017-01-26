@@ -39,44 +39,46 @@ public class NaiveBayesianClassifier {
         while (sc.hasNextLine()) {
             String filename = sc.nextLine();
             String result = classifier.classify(filename);
-            System.out.println("--| Started updating");
-            System.out.println("--| The file is classified as: " + result);
-            boolean inputValid = false;
-            String correct = "";
-            String actualClass = "";
-            while (!inputValid) {
-                System.out.println("--| Is this correct? (y/n)");
-                correct = sc.nextLine();
-                if (correct.equals("y")) {
-                    inputValid = true;
-                    actualClass = result;
-                } else if (correct.equals("n")) {
-                    inputValid = true;
-                    boolean isActualClass = false;
-                    while (!isActualClass) {
-                        System.out.println("--| Could you please tell me what the right class would have been?");
-                        actualClass = sc.nextLine();
-                        if (trainer.getVocabularyBuilder().getClasses().contains(actualClass)) {
-                            isActualClass = true;
-                        } else {
-                            System.out.println("--| Unfortunately, that class is not known. Please try again");
+            if (result != null) {
+                System.out.println("--| Started updating");
+                System.out.println("--| The file is classified as: " + result);
+                boolean inputValid = false;
+                String correct = "";
+                String actualClass = "";
+                while (!inputValid) {
+                    System.out.println("--| Is this correct? (y/n)");
+                    correct = sc.nextLine();
+                    if (correct.equals("y")) {
+                        inputValid = true;
+                        actualClass = result;
+                    } else if (correct.equals("n")) {
+                        inputValid = true;
+                        boolean isActualClass = false;
+                        while (!isActualClass) {
+                            System.out.println("--| Could you please tell me what the right class would have been?");
+                            actualClass = sc.nextLine();
+                            if (trainer.getVocabularyBuilder().getClasses().contains(actualClass)) {
+                                isActualClass = true;
+                            } else {
+                                System.out.println("--| Unfortunately, that class is not known. Please try again");
+                            }
                         }
+                    } else {
+                        System.out.println("--| Please answer with \"y\" or \"n\"");
                     }
-                } else {
-                    System.out.println("--| Please answer with \"y\" or \"n\"");
                 }
+                String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
+                        + File.separator + filename;
+                File classifiedFile = new File(fileLocation);
+                updater.copyToTrainingSet(classifiedFile, actualClass);
+                System.out.println("--| Retraining...");
+                trainer.train();
+                System.out.println("--| Retraining complete");
+            } else {
+                System.out.println("|-- The specified file is not a correct file");
             }
-            String fileLocation = NaiveBayesianClassifier.getDirectory() + File.separator + TEST_DIRECTORY_NAME
-                    + File.separator + filename;
-            File classifiedFile = new File(fileLocation);
-            updater.copyToTrainingSet(classifiedFile, actualClass);
-            System.out.println("--| Retraining...");
-            trainer.train();
-            System.out.println("--| Retraining complete");
             System.out.println("|-- What is the name of the file you want to classify?");
         }
-
-
     }
 
     public static Trainer getTrainer() {
