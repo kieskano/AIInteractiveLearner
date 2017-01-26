@@ -16,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
@@ -25,12 +26,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Optional;
 
 
 /**
- * Created by Wijtse on 25-1-2017.
+ * Created by Wijtse on 25-1-2017
  */
 public class MainGUI extends Application {
+
+    private Button btnReset;
 
     public enum State {
         UNTRAINED, TRAINING, TRAINED, CLASSIFYING;
@@ -39,13 +43,13 @@ public class MainGUI extends Application {
         public String toString() {
             switch (this) {
                 case UNTRAINED:
-                    return "State: Untrained  ";
+                    return "Not yet trained           ";
                 case TRAINING:
-                    return "State: Training     ";
+                    return "Training...               ";
                 case TRAINED:
-                    return "State: Trained         ";
+                    return "Trained                   ";
                 case CLASSIFYING:
-                    return "State: Classifying";
+                    return "Classifying...            ";
                 default:
                     return "";
             }
@@ -76,7 +80,7 @@ public class MainGUI extends Application {
         state = State.UNTRAINED;
 
 
-        primaryStage.setTitle("NaiveBayesianClassifier");
+        primaryStage.setTitle("Naive Bayesian Classifier");
         primaryStage.setWidth(400);
         primaryStage.setHeight(300);
 
@@ -196,7 +200,30 @@ public class MainGUI extends Application {
                                 }
                             }
                             if (rg.getAssignedClass() != null) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            state = MainGUI.State.TRAINING;
+                                            statusText.setText(state.toString());
+                                            disableEverything();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
                                 NaiveBayesianClassifier.getUpdater().copyToTrainingSet(new File(filePath), rg.getAssignedClass());
+                                train();
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            enableEveryThing();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
                             }
                         }
                     }.start();
@@ -226,6 +253,39 @@ public class MainGUI extends Application {
         statusText.setTranslateY(180);
         statusText.minWidth(300);
 
+        btnReset = new Button("Reset");
+        btnReset.setTranslateY(-20);
+        btnReset.setTranslateX(-305);
+        btnReset.setVisible(false);
+        btnReset.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirm reset");
+                alert.setHeaderText("Reset the training data to original state");
+                alert.setContentText("Are you sure you want to reset the training data?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    disableEverything();
+                    state = State.TRAINING;
+                    statusText.setText(state.toString());
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            NaiveBayesianClassifier.getUpdater().resetTrainingData();
+                            train();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    enableEveryThing();
+                                }
+                            });
+                        }
+                    }.start();
+                }
+            }
+        });
+
         layout.getChildren().add(tfCorpusLocation);
         layout.getChildren().add(btnBrowse);
         layout.getChildren().add(btnSettings);
@@ -233,6 +293,7 @@ public class MainGUI extends Application {
         layout.getChildren().add(topText);
         layout.getChildren().add(btnClassify);
         layout.getChildren().add(btnBack);
+        layout.getChildren().add(btnReset);
         layout.getChildren().add(statusText);
         root.getChildren().add(layout);
         scene = new Scene(root);
@@ -298,6 +359,7 @@ public class MainGUI extends Application {
         btnBack.setVisible(true);
         btnSettings.setVisible(false);
         btnClassify.setVisible(true);
+        btnReset.setVisible(true);
         btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -317,6 +379,7 @@ public class MainGUI extends Application {
         btnBack.setVisible(false);
         btnSettings.setVisible(true);
         btnClassify.setVisible(false);
+        btnReset.setVisible(false);
         btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
